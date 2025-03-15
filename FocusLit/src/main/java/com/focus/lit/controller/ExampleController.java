@@ -1,14 +1,13 @@
-package com.study.lit.controller;
+package com.focus.lit.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class TestController {
+public class ExampleController {
 
     @GetMapping("/")
-    public String hello() {
-        return "Hello from StudyLit";
-                
+    public String sayHello() {
+        return "Hello From FocusLit";
     }
 }

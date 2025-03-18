@@ -1,0 +1,38 @@
+/.idea
+
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (SDK path, etc)
+local.properties
+
+# Android Studio specific files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# User-specific files
+*.log
+*.swp
+*.bak
+*.tmp
+
+# Generated files
+/app/build/
+
+# Kotlin-specific
+*.kotlin_module
+*.kotlin_metadata
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# NDK
+*.o
+*.so
+*.a

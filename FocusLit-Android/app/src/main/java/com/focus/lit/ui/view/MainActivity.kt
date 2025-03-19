@@ -1,4 +1,4 @@
-package com.focus.lit
+package com.focus.lit.ui.view
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.focus.lit.ui.theme.FocusLitMobileTheme
+import com.focus.lit.utils.FocusLitMobileTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

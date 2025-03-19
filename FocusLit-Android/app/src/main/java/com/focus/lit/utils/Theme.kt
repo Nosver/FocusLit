@@ -1,4 +1,4 @@
-package com.focus.lit.ui.theme
+package com.focus.lit.utils
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

@@ -1,4 +1,4 @@
-package com.focus.lit.ui.theme
+package com.focus.lit.utils
 
 import androidx.compose.ui.graphics.Color
 

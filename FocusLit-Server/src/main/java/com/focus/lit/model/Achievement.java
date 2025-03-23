@@ -1,10 +1,8 @@
-package com.focus.lit.entity;
+package com.focus.lit.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -20,7 +18,6 @@ public class Achievement {
 
     private int point;
 
-    // FIXME: Problem here!
     @ManyToOne
     @JoinColumn(name = "user_analytics_id", referencedColumnName = "id")
     private UserAnalytics userAnalytics;

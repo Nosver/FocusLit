@@ -1,4 +1,4 @@
-package com.focus.lit.entity;
+package com.focus.lit.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

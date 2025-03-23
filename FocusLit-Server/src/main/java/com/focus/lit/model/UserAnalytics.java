@@ -1,10 +1,9 @@
-package com.focus.lit.entity;
+package com.focus.lit.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -24,6 +23,10 @@ public class UserAnalytics {
 
     private int score;
 
-    private int rank;
+    @Column(name = "user_rank")
+    private int userRank;
+
+    @OneToMany(mappedBy = "userAnalytics")
+    private List<Achievement> achievements;
 
 }

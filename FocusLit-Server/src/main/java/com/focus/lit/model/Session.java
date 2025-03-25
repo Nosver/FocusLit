@@ -39,4 +39,7 @@ public class Session {
     @Column(name = "score_multiplier")
     private float scoreMultiplier;
 
+    @Column(name = "is_completed")
+    private boolean isCompleted;
+
 }

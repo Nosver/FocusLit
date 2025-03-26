@@ -16,12 +16,12 @@ class ProfileViewModel : ViewModel() {
         private set
 
     var achievementImages = mutableStateListOf<Int>(
-        R.drawable.achievement,
-        R.drawable.achievement,
-        R.drawable.achievement,
-        R.drawable.achievement,
-        R.drawable.achievement,
-        R.drawable.achievement
+        R.drawable.trophy,
+        R.drawable.trophy,
+        R.drawable.trophy,
+        R.drawable.trophy,
+        R.drawable.trophy,
+        R.drawable.trophy
     )
     private set
 

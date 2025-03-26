@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -42,7 +43,7 @@ fun ImagePagerCarousel(images: List<Int>) {
                 modifier = Modifier
                     .weight(1f)
                     .height(150.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(CircleShape)
                     .background(Color.Gray),
                 contentScale = ContentScale.Crop
             )
@@ -55,7 +56,7 @@ fun ImagePagerCarousel(images: List<Int>) {
                     modifier = Modifier
                         .weight(1f)
                         .height(150.dp)
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(CircleShape)
                         .background(Color.Gray),
                     contentScale = ContentScale.Crop
                 )

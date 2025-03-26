@@ -64,7 +64,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = vi
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(5.dp)
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth(),

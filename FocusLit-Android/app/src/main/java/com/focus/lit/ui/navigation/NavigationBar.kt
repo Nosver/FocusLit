@@ -2,9 +2,11 @@ package com.focus.lit.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
@@ -22,10 +24,11 @@ fun NavigationBarSample(navController: NavController) {
     val items = listOf(
         Screen.Homepage,
         Screen.StartSession,
-        Screen.Profile
+        Screen.Profile,
+        Screen.UserAnalytics
     )
-    val selectedIcons = listOf(Icons.Filled.Home, Icons.Filled.AddCircle, Icons.Filled.Person)
-    val unselectedIcons = listOf(Icons.Outlined.Home, Icons.Outlined.AddCircle, Icons.Outlined.Person)
+    val selectedIcons = listOf(Icons.Filled.Home, Icons.Filled.AddCircle, Icons.Filled.Person, Icons.Filled.DateRange)
+    val unselectedIcons = listOf(Icons.Outlined.Home, Icons.Outlined.AddCircle, Icons.Outlined.Person, Icons.Outlined.DateRange)
 
     val currentRoute = currentRoute(navController)
 

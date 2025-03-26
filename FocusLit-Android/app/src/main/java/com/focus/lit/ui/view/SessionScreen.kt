@@ -1,21 +1,13 @@
 package com.focus.lit.ui.view
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -35,7 +27,7 @@ import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.request.ImageRequest
 import com.focus.lit.R
-import com.focus.lit.ui.components.GenericButton
+import com.focus.lit.ui.components.GenericDropdownMenuContent
 
 
 @Composable
@@ -102,7 +94,7 @@ fun StartSessionScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        DropdownMenuContent(filteredTopics, searchQuery) {
+        GenericDropdownMenuContent(filteredTopics, searchQuery) {
             selectedTopic = it
             searchQuery = it
         }
@@ -121,26 +113,3 @@ fun StartSessionScreen(navController: NavHostController) {
     }
 }
 
-@Composable
-fun DropdownMenuContent(
-    topics: List<String>,
-    query: String,
-    onSelect: (String) -> Unit
-) {
-    if (query.isNotEmpty()) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 150.dp)
-                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
-                .border(1.dp, MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp))
-        ) {
-            items(topics) { topic ->
-                DropdownMenuItem(
-                    text = { Text(topic) },
-                    onClick = { onSelect(topic) }
-                )
-            }
-        }
-    }
-}

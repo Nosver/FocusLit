@@ -2,11 +2,14 @@ package com.focus.lit.ui.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -28,6 +31,7 @@ import coil.decode.GifDecoder
 import coil.request.ImageRequest
 import com.focus.lit.R
 import com.focus.lit.ui.components.GenericDropdownMenuContent
+import com.focus.lit.ui.components.GenericIconButton
 
 
 @Composable
@@ -51,10 +55,13 @@ fun StartSessionScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(horizontal = 24.dp, vertical = 6.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
+            GenericIconButton(icon = Icons.Default.Add, onClick = {navController.navigate("add_tag")})
+        }
         AsyncImage(
             model = ImageRequest.Builder(context)
                 .data(R.drawable.giphy) // Use your GIF filename here without extension

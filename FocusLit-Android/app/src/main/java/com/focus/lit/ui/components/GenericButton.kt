@@ -9,11 +9,13 @@ import androidx.compose.ui.Modifier
 fun GenericButton(
     onClick: () -> Unit = {},
     text: String = "Default",
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
+        enabled = enabled
     ) {
         Text(text = text)
     }

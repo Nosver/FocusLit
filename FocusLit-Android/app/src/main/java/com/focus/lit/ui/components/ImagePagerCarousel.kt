@@ -42,7 +42,7 @@ fun ImagePagerCarousel(images: List<Int>) {
                 contentDescription = "Achievement Image",
                 modifier = Modifier
                     .weight(1f)
-                    .height(150.dp)
+                    .height(140.dp)
                     .clip(CircleShape)
                     .background(Color.Gray),
                 contentScale = ContentScale.Crop
@@ -55,7 +55,7 @@ fun ImagePagerCarousel(images: List<Int>) {
                     contentDescription = "Achievement Image",
                     modifier = Modifier
                         .weight(1f)
-                        .height(150.dp)
+                        .height(140.dp)
                         .clip(CircleShape)
                         .background(Color.Gray),
                     contentScale = ContentScale.Crop

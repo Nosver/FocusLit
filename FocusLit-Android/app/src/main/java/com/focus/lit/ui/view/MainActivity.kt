@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.focus.lit.ui.navigation.NavigationBarSample
+import com.focus.lit.ui.navigation.NavigationGraph
 import com.focus.lit.utils.FocusLitMobileTheme
 
 class MainActivity : ComponentActivity() {
@@ -49,40 +50,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-sealed class Screen(val route: String) {
-    object Homepage : Screen("homepage")
-    object StartSession : Screen("start Session")
-    object Profile : Screen("profile")
-    object Login : Screen("login")
-}
-
-
-@Composable
-fun NavigationGraph(navController: NavHostController) {
-    NavHost(navController, startDestination = Screen.Login.route) {
-        composable(Screen.Homepage.route) { HomepageScreen(navController) }
-        composable(Screen.StartSession.route) { StartSessionScreen(navController) }
-        composable(Screen.Profile.route) { ProfileScreen(navController) }
-        composable(Screen.Login.route) { LoginScreen(navController) }
-    }
-}
-
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FocusLitMobileTheme {
-        Greeting("Android")
     }
 }

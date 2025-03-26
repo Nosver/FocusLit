@@ -23,7 +23,6 @@ import androidx.navigation.compose.rememberNavController
 import com.focus.lit.ui.navigation.NavigationBarSample
 import com.focus.lit.utils.FocusLitMobileTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +54,7 @@ class MainActivity : ComponentActivity() {
 
 sealed class Screen(val route: String) {
     object Homepage : Screen("homepage")
-    object StartSession : Screen("start_session")
+    object StartSession : Screen("start Session")
     object Profile : Screen("profile")
     object Login : Screen("login")
 }

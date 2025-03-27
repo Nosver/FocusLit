@@ -49,7 +49,7 @@ fun StartSessionScreen(navController: NavHostController) {
     var searchQuery by remember { mutableStateOf("") }
     val allTopics = listOf("Mathematics", "Physics", "History", "Biology", "Computer Science", "English", "Chemistry", "Economics")
     val filteredTopics = allTopics.filter {
-        it.contains(searchQuery, ignoreCase = true)
+        it.startsWith(searchQuery, ignoreCase = true)
     }
 
     Column(
@@ -110,7 +110,7 @@ fun StartSessionScreen(navController: NavHostController) {
         Button(
             onClick = {
                 // Navigate or start session logic here
-                // navController.navigate("studySession?study=$studyMinutes&break=$breakMinutes&topic=$selectedTopic")
+                navController.navigate("timer?study=$studyMinutes&break=$breakMinutes&topic=$selectedTopic")
             },
             enabled = studyMinutes.isNotEmpty() && breakMinutes.isNotEmpty() && selectedTopic.isNotEmpty(),
             modifier = Modifier.fillMaxWidth()

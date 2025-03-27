@@ -3,8 +3,10 @@ package com.focus.lit.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.focus.lit.ui.view.AddTagScreen
 import com.focus.lit.ui.view.HomepageScreen
 import com.focus.lit.ui.view.LoginScreen
@@ -22,7 +24,17 @@ fun NavigationGraph(navController: NavHostController) {
         composable(Screen.Login.route) { LoginScreen(navController) }
         composable(Screen.AddTag.route){AddTagScreen(navController)}
         composable(Screen.UserAnalytics.route){UserAnalyticsScreen(navController)}
-        composable(Screen.Timer.route){ TimerScreen(navController) }
-    }
+        composable(
+            route = "timer?study={study}&break={break}&topic={topic}",
+            arguments = listOf(
+                navArgument("study") { type = NavType.IntType },
+                navArgument("break") { type = NavType.IntType },
+                navArgument("topic") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            TimerScreen(navController, backStackEntry)
+        }
+
+           }
 }
 

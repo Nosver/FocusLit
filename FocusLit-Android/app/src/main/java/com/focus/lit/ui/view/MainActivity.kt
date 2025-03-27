@@ -31,8 +31,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FocusLitMobileTheme {
                 val navController = rememberNavController()
-                val currentBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = currentBackStackEntry?.destination?.route
+                val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route?.substringBefore("?")
 
                 Scaffold(
                     modifier = Modifier

@@ -11,6 +11,7 @@ import com.focus.lit.ui.view.AddTagScreen
 import com.focus.lit.ui.view.HomepageScreen
 import com.focus.lit.ui.view.LoginScreen
 import com.focus.lit.ui.view.ProfileScreen
+import com.focus.lit.ui.view.SettingsScreen
 import com.focus.lit.ui.view.StartSessionScreen
 import com.focus.lit.ui.view.TimerScreen
 import com.focus.lit.ui.view.UserAnalyticsScreen
@@ -35,6 +36,7 @@ fun NavigationGraph(navController: NavHostController) {
             TimerScreen(navController, backStackEntry)
         }
 
+            composable(Screen.Settings.route){SettingsScreen(navController)}
            }
 }
 

@@ -47,9 +47,9 @@ fun StartSessionScreen(navController: NavHostController) {
     var breakMinutes by remember { mutableStateOf("") }
     var selectedTopic by remember { mutableStateOf("") }
     var searchQuery by remember { mutableStateOf("") }
-    val allTopics = listOf("Mathematics", "Physics", "History", "Biology", "Computer Science", "English", "Chemistry", "Economics")
+    val allTopics = listOf("#Mathematics", "#Physics", "#History", "#Biology", "#ComputerScience", "#English", "#Chemistry", "#Economics")
     val filteredTopics = allTopics.filter {
-        it.startsWith(searchQuery, ignoreCase = true)
+        it.substring(1).startsWith(searchQuery, ignoreCase = true)
     }
 
     Column(
@@ -96,7 +96,7 @@ fun StartSessionScreen(navController: NavHostController) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { Text("Search Topic") },
+            label = { Text("Search a Tag for you topic ") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )

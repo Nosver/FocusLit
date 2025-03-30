@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,8 +47,11 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = vi
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Absolute.SpaceBetween) {
+                GenericIconButton(icon = Icons.Default.Settings, onClick = { navController.navigate("settings") })
+
                GenericIconButton(icon = Icons.Default.Create )
+
             }
             Spacer(modifier = Modifier.height(30.dp))
             Image(

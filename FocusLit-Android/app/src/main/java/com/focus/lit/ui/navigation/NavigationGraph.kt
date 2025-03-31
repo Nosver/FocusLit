@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.focus.lit.ui.view.AddTagScreen
+import com.focus.lit.ui.view.ChangePasswordScreen
 import com.focus.lit.ui.view.HomepageScreen
 import com.focus.lit.ui.view.LoginScreen
 import com.focus.lit.ui.view.ProfileScreen
@@ -37,6 +38,7 @@ fun NavigationGraph(navController: NavHostController) {
         }
 
             composable(Screen.Settings.route){SettingsScreen(navController)}
-           }
+            composable(Screen.AccountSettings.route){ChangePasswordScreen(navController)}
+    }
 }
 

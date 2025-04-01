@@ -20,7 +20,6 @@ public class Session {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    // tag
     @ManyToOne
     @JoinColumn(name = "tag_id", referencedColumnName = "id")
     private Tag tag;

@@ -16,6 +16,7 @@ import com.focus.lit.ui.view.SettingsScreen
 import com.focus.lit.ui.view.StartSessionScreen
 import com.focus.lit.ui.view.TimerScreen
 import com.focus.lit.ui.view.UserAnalyticsScreen
+import com.focus.lit.ui.view.RegisterScreen
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
@@ -24,6 +25,7 @@ fun NavigationGraph(navController: NavHostController) {
         composable(Screen.StartSession.route) { StartSessionScreen(navController) }
         composable(Screen.Profile.route) { ProfileScreen(navController) }
         composable(Screen.Login.route) { LoginScreen(navController) }
+        composable(Screen.Register.route) { RegisterScreen(navController) }
         composable(Screen.AddTag.route){AddTagScreen(navController)}
         composable(Screen.UserAnalytics.route){UserAnalyticsScreen(navController)}
         composable(

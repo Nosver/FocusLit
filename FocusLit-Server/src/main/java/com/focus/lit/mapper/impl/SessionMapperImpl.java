@@ -39,8 +39,8 @@ public class SessionMapperImpl implements SessionMapper {
         }
 
         Session session = new Session();
-        session.setUser(fetchUserById(sessionDto.getUserId()));
-        session.setTag(fetchTagById(sessionDto.getTagId()));
+        session.setUser(fetchUserById(sessionDto.getUserId())); // TODO: Create user objects using dto.userId then set
+        session.setTag(fetchTagById(sessionDto.getTagId())); // TODO
         session.setStartTime(sessionDto.getStartTime());
         session.setWorkDuration(sessionDto.getWorkDuration());
         session.setWaitDuration(sessionDto.getWaitDuration());

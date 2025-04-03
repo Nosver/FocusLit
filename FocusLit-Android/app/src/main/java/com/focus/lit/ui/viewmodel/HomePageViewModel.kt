@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.State
 
-class UserAnalyticsViewModel : ViewModel() {
+class HomePageViewModel : ViewModel() {
 
     private val _streak = mutableStateOf(0)
     val streak: State<Int> = _streak

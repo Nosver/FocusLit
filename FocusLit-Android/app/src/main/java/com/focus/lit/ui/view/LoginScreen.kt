@@ -1,6 +1,7 @@
 package com.focus.lit.ui.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -77,6 +78,14 @@ fun LoginScreen(navController: NavController) {
                     .alpha(0.5f)
             )
             Spacer(modifier = Modifier.height(16.dp))
+            Row {
+                Text("Do not have account? ")
+                Text(
+                    "Register Here",
+                    modifier = Modifier.clickable(onClick = { navController.navigate("Register") })
+                )
+            }
+                Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
                     handleLogin(navController)

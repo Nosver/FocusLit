@@ -25,7 +25,6 @@ fun NavigationBarSample(navController: NavController) {
         Screen.Homepage,
         Screen.StartSession,
         Screen.Profile,
-        Screen.UserAnalytics
     )
     val selectedIcons = listOf(Icons.Filled.Home, Icons.Filled.AddCircle, Icons.Filled.Person, Icons.Filled.DateRange)
     val unselectedIcons = listOf(Icons.Outlined.Home, Icons.Outlined.AddCircle, Icons.Outlined.Person, Icons.Outlined.DateRange)

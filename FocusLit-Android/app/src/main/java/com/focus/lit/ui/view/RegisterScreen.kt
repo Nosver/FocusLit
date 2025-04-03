@@ -1,7 +1,6 @@
 package com.focus.lit.ui.view
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,17 +14,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.focus.lit.R
 import androidx.compose.ui.geometry.Offset
 import androidx.navigation.NavController
+import com.focus.lit.R
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun RegisterScreen(navController: NavController) {
     var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -33,7 +33,7 @@ fun LoginScreen(navController: NavController) {
     ) {
         Image(
             painter = painterResource(id = R.drawable.login_image),
-            contentDescription = "Login Image",
+            contentDescription = "Register Background",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
@@ -47,7 +47,7 @@ fun LoginScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Login",
+                text = "Register",
                 style = TextStyle(
                     color = Color.White,
                     fontSize = 36.sp,
@@ -59,15 +59,27 @@ fun LoginScreen(navController: NavController) {
                 )
             )
             Spacer(modifier = Modifier.height(16.dp))
+
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
                 label = { Text("Username") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(0.5f)
+                    .alpha(0.8f)
             )
             Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(0.8f)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -75,44 +87,44 @@ fun LoginScreen(navController: NavController) {
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(0.5f)
+                    .alpha(0.8f)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text("Confirm Password") },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(0.8f)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Row {
-                Text("Do not have account? ")
-                Text(
-                    "Register Here",
-                    modifier = Modifier.clickable(onClick = { navController.navigate("Register") })
-                )
-            }
-                Spacer(modifier = Modifier.height(16.dp))
+
             Button(
-                onClick = {
-                    handleLogin(navController)
-                },
+                onClick = { handleRegister(navController) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Login")
+                Text("Register")
             }
+
             Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { handleGoogleLogin() },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+
+            TextButton(
+                onClick = { navController.navigate("login") },
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Enter with Google")
+                Text("Already have an account? Login")
             }
         }
     }
 }
 
-fun handleLogin(navController: NavController) {
-    navController.navigate("homepage") {
-        popUpTo("login") { inclusive = true } // Removes login from back stack
-    }
-}
+fun handleRegister(navController: NavController) {
 
-fun handleGoogleLogin() {
-    throw NotImplementedError("Google login is not implemented yet")
+    navController.navigate("homepage") {
+        popUpTo("register") { inclusive = true }
+    }
 }

@@ -20,12 +20,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.focus.lit.R
-import com.focus.lit.ui.viewmodel.UserAnalyticsViewModel
+import com.focus.lit.ui.viewmodel.HomePageViewModel
 
 @Composable
-fun UserAnalyticsScreen(
+fun HomePage(
     navController: NavHostController,
-    viewModel: UserAnalyticsViewModel = viewModel()
+    viewModel: HomePageViewModel = viewModel()
 ) {
     val streak by viewModel.streak
     val totalWorkDuration by viewModel.totalWorkDuration
@@ -40,7 +40,7 @@ fun UserAnalyticsScreen(
     ) {
         // Title with gradient
         Text(
-            text = "User Analytics",
+            text = "Welcome Jane Doe",
             style = MaterialTheme.typography.headlineLarge.copy(
                 fontSize = 32.sp,
                 brush = Brush.horizontalGradient(

@@ -19,20 +19,21 @@ public class SessionController {
     @Autowired
     SessionService sessionService;
 
-    @Autowired
-    private SessionMapper sessionMapper;
+    //@Autowired
+    //private SessionMapper sessionMapper;
 
     @PostMapping("/create")
     public ResponseEntity<SessionDto> create(@RequestBody SessionDto sessionDto) {
-        try {
-            Session session = sessionMapper.toEntity(sessionDto);
-            Session createdSession = sessionService.createSession(session);
-            SessionDto createdSessionDto = sessionMapper.toDto(createdSession);
-            return new ResponseEntity<>(createdSessionDto, HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        try {
+//            Session session = sessionMapper.toEntity(sessionDto);
+//            Session createdSession = sessionService.createSession(session);
+//            SessionDto createdSessionDto = sessionMapper.toDto(createdSession);
+//            return new ResponseEntity<>(createdSessionDto, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+        return null;
     }
 
 

@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
@@ -29,6 +31,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.focus.lit.R
 import com.focus.lit.ui.viewmodel.ProfileViewModel
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextField
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import com.focus.lit.ui.components.GenericIconButton
 import com.focus.lit.ui.components.ImagePagerCarousel
@@ -49,8 +55,10 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = vi
         ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Absolute.SpaceBetween) {
                 GenericIconButton(icon = Icons.Default.Settings, onClick = { navController.navigate("settings") })
-
-               GenericIconButton(icon = Icons.Default.Create )
+                if(viewModel.changeComponentState){
+                    GenericIconButton(icon = Icons.Default.Clear)
+                }
+                GenericIconButton(icon = Icons.Default.Create, onClick = {viewModel.changeComponentState()} )
 
             }
             Spacer(modifier = Modifier.height(30.dp))
@@ -62,13 +70,17 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = vi
                     .clip(CircleShape)
                     .border(2.dp, Color.Gray, CircleShape)
             )
-            Text(
-                text = viewModel.userName,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(5.dp)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
+            BasicTextField(
+                value = viewModel.userName,
+                onValueChange = {viewModel.userName = it},
+                modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                textStyle = TextStyle(
+                fontSize = 18.sp,
+                color = Color.Black,
+                textAlign = TextAlign.Center),
+                enabled = viewModel.changeComponentState
+                )
+            Spacer(modifier = Modifier.height(10.dp))
             HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -83,7 +95,15 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = vi
             horizontalAlignment = Alignment.Start
         ) {
             Text(text = "Email", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Text(text = viewModel.email, color = Color.Blue, fontSize = 16.sp)
+            BasicTextField(
+                value = viewModel.email,
+                onValueChange = {viewModel.email = it},
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = TextStyle(
+                    fontSize = 15.sp,
+                    color = Color.Blue),
+                enabled = viewModel.changeComponentState
+            )
             Spacer(modifier = Modifier.height(40.dp))
             Text(text = "Achievements", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(10.dp))

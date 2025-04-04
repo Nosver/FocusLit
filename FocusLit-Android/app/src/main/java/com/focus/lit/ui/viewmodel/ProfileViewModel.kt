@@ -9,11 +9,11 @@ import com.focus.lit.R
 
 class ProfileViewModel : ViewModel() {
 
-    var userName by mutableStateOf("John Doe")
-        private set  // Encapsulating the state
+    var userName by mutableStateOf("Jane Doe")
 
-    var email by mutableStateOf("johndoe@gmail.com")
-        private set
+    var email by mutableStateOf("janedoe@gmail.com")
+
+    var changeComponentState by mutableStateOf(false)
 
     var achievementImages = mutableStateListOf<Int>(
         R.drawable.trophy,
@@ -25,9 +25,8 @@ class ProfileViewModel : ViewModel() {
     )
     private set
 
-    fun updateProfile(newName: String, newEmail: String) {
-        userName = newName
-        email = newEmail
+    fun changeComponentState(){
+        changeComponentState = !changeComponentState
     }
 
 }

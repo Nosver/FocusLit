@@ -7,7 +7,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface SessionMapper {
-
     SessionDto sessionToSessionDto(Session session);
     Session sessionDtoToSession(SessionDto sessionDto);
 }

@@ -9,4 +9,6 @@ import java.util.Optional;
 @Service
 public interface UserService {
 
+    Optional<User> getById(Integer id);
+
 }

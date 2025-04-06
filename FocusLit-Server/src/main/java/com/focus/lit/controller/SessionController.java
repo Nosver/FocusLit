@@ -2,6 +2,7 @@ package com.focus.lit.controller;
 
 import com.focus.lit.dto.SessionDto;
 import com.focus.lit.mapper.SessionMapper;
+import com.focus.lit.mapper.TagMapper;
 import com.focus.lit.model.Session;
 import com.focus.lit.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class SessionController {
 
     @Autowired
     private SessionMapper sessionMapper;
+
+
 
     @PostMapping("/create")
     public ResponseEntity<SessionDto> create(@RequestBody SessionDto sessionDto) {

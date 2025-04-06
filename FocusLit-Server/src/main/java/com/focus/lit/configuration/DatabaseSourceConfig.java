@@ -1,6 +1,5 @@
-package com.focus.lit.controller.configuration;
+package com.focus.lit.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

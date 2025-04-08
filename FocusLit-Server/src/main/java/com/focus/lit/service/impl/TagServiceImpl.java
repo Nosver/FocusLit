@@ -1,8 +1,8 @@
 package com.focus.lit.service.impl;
 
 import com.focus.lit.dto.TagDto;
-import com.focus.lit.dto.UserDto;
 import com.focus.lit.mapper.TagMapper;
+import com.focus.lit.model.Tag;
 import com.focus.lit.repository.TagRepository;
 import com.focus.lit.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +26,15 @@ public class TagServiceImpl implements TagService {
                 .stream()
                 .map(tagMapper::tagToTagDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void incrementTotalWorkDuration(int increment, Tag tag) {
+        if(tag == null) {
+            throw new NullPointerException("Given tag is null");
+        }
+
+        tag.setTotalWorkDuration(tag.getTotalWorkDuration() + increment);
+        tagRepository.save(tag);
     }
 }

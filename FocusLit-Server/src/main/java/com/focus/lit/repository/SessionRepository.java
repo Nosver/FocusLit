@@ -7,5 +7,5 @@ import java.util.Date;
 import java.util.List;
 
 public interface SessionRepository extends JpaRepository<Session, Integer> {
-
+    List<Session> findByUserId(int userId);
 }

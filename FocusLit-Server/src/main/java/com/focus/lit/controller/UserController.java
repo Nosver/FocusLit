@@ -40,4 +40,15 @@ public class UserController {
         }
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<User> createUser(@RequestBody UserDto userDto) {
+        try{
+            User createdUser = userService.createUser(userDto);
+            return ResponseEntity.ok(createdUser);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

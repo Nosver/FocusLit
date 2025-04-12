@@ -26,7 +26,11 @@ public class UserAnalytics {
     @Column(name = "user_rank")
     private int userRank;
 
-    @OneToMany(mappedBy = "userAnalytics")
-    private List<Achievement> achievements;
-
+    @ManyToMany
+    @JoinTable(
+            name = "user_achievements",
+            joinColumns = @JoinColumn(name = "user_analytics_id"),
+            inverseJoinColumns = @JoinColumn(name = "achievement_id")
+    )
+    private List<Achievement> userAchievements;
 }

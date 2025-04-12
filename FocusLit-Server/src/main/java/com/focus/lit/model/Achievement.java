@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -18,8 +20,7 @@ public class Achievement {
 
     private int point;
 
-    @ManyToOne
-    @JoinColumn(name = "user_analytics_id", referencedColumnName = "id")
-    private UserAnalytics userAnalytics;
+    @ManyToMany(mappedBy = "userAchievements")
+    private List<UserAnalytics> users;
 
 }

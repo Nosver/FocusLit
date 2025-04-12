@@ -12,5 +12,5 @@ public interface UserService {
 
     Optional<User> getById(Integer id);
 
-    User createUser(UserDto userDto);
+    User createUser(UserDto userDto) throws Exception;
 }

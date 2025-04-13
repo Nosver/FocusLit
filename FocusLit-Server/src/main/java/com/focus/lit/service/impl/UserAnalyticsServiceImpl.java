@@ -6,6 +6,8 @@ import com.focus.lit.service.UserAnalyticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserAnalyticsServiceImpl implements UserAnalyticsService {
 
@@ -20,5 +22,10 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
         userAnalytics.setStreak(0);
         userAnalytics.setUserRank(-1);
         return userAnalyticsRepository.save(userAnalytics);
+    }
+
+    @Override
+    public Optional<UserAnalytics> getUserAnalytics(int id) {
+        return userAnalyticsRepository.findById(id);
     }
 }

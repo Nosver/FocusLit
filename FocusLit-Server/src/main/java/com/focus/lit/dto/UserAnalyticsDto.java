@@ -10,6 +10,8 @@ import lombok.Setter;
 public class UserAnalyticsDto {
     private int id;
 
+    private int score;
+
     private int streak;
 
     private int totalWorkDuration;

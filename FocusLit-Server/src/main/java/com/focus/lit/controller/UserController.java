@@ -1,6 +1,7 @@
 package com.focus.lit.controller;
 
 import com.focus.lit.dto.SessionDto;
+import com.focus.lit.dto.UpdateUserInfoDto;
 import com.focus.lit.dto.UserDto;
 import com.focus.lit.mapper.UserMapper;
 import com.focus.lit.model.User;
@@ -8,6 +9,7 @@ import com.focus.lit.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.util.StringUtils;
 
@@ -53,6 +55,18 @@ public class UserController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody UpdateUserInfoDto updateUserInfoDto) {
+        try {
+            return ResponseEntity.ok(userService.updateUser(updateUserInfoDto));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+
     }
 
 }

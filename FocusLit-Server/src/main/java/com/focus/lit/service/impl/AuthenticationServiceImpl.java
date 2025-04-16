@@ -71,26 +71,23 @@ public class AuthenticationServiceImpl {
     public AuthenticationResponse authenticate(UserDto userDto) throws AuthenticationException {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        userDto.getName(),
+                        userDto.getMail(),
                         userDto.getPassword()
                 )
         );
 
-        User user = userRepository.findByMail(userDto.getName()).orElseThrow();
-
+        User user = userRepository.findByMail(userDto.getMail()).orElseThrow();
         String jwt = jwtService.generateToken(user);
 
         revokeAllTokenByUser(userDto);
         saveUserToken(jwt, user);
 
         return new AuthenticationResponse(jwt, "User login was successful",user.getRole().toString());
-
     }
     
     private void revokeAllTokenByUser(UserDto userDto) {
-
-        tokenRepository.deleteUserTokens((long) userDto.getId());
-
+        Optional<User> user = userRepository.findByMail(userDto.getMail());
+        tokenRepository.deleteUserTokens(user.get().getId());
     }
     
     private void saveUserToken(String jwt, User user) {

@@ -25,5 +25,5 @@ where t.user.id = :userId and t.loggedOut = false
     @Modifying
     @Transactional
     @Query("delete from Token t where t.user.id = :userId")
-    void deleteUserTokens(@Param("userId") Long userId);
+    void deleteUserTokens(@Param("userId") int userId);
 }

@@ -82,7 +82,7 @@ public class JwtServiceImpl {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public void deleteUserTokens(Long userId){
+    public void deleteUserTokens(int userId){
         tokenRepository.deleteUserTokens(userId);
     }
 }

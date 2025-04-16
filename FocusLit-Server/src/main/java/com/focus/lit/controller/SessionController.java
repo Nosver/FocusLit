@@ -39,7 +39,7 @@ public class SessionController {
     };
 
     @GetMapping("/getByUserId")
-    public ResponseEntity<?> create(@RequestParam int userId) {
+    public ResponseEntity<?> getAllSessionsByUserId(@RequestParam int userId) {
         try {
             List<Session> sessionList = sessionService.getSessionsByUserId(userId);
             return new ResponseEntity<>(sessionList, HttpStatus.OK);

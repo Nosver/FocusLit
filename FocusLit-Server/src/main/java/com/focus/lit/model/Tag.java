@@ -1,5 +1,6 @@
 package com.focus.lit.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ public class Tag {
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
+    @Nullable
     private Tag parent;
 
     private String name;

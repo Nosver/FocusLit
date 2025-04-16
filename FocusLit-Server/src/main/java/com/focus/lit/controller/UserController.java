@@ -43,20 +43,6 @@ public class UserController {
         }
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody UserDto userDto) {
-        try{
-            if(!StringUtils.hasText(userDto.getMail()) || !StringUtils.hasText(userDto.getPassword()) || !StringUtils.hasText(userDto.getName())){
-                return ResponseEntity.badRequest().body("All fields should be filled");
-            }
-            User createdUser = userService.createUser(userDto);
-            return ResponseEntity.ok(createdUser);
-        }catch(Exception e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
     @PostMapping("/update")
     public ResponseEntity<?> updateUser(@RequestBody UpdateUserInfoDto updateUserInfoDto) {
         try {

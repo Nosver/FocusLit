@@ -2,100 +2,98 @@ package com.focus.lit.service.impl;
 
 
 import com.focus.lit.dto.AuthenticationResponse;
+import com.focus.lit.dto.UserDto;
 import com.focus.lit.model.Token;
 import com.focus.lit.model.User;
+import com.focus.lit.model.UserAnalytics;
 import com.focus.lit.model.enums.Role;
 import com.focus.lit.repository.TokenRepository;
 import com.focus.lit.repository.UserRepository;
+import com.focus.lit.service.UserAnalyticsService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 // ecustomer@gmail.com1231231
 // 5gsn7P)sBn
 @Service
-public class AuthenticationService {
-    private final UserRepository repository;
+public class AuthenticationServiceImpl {
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final JwtServiceImpl jwtService;
     private final TokenRepository tokenRepository;
-
+    private final UserAnalyticsService userAnalyticsService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationService(UserRepository repository,
-                                 PasswordEncoder passwordEncoder,
-                                 JwtService jwtService,
-                                 TokenRepository tokenRepository,
-                                 AuthenticationManager authenticationManager
-
+    public AuthenticationServiceImpl(UserRepository userRepository,
+                                     PasswordEncoder passwordEncoder,
+                                     JwtServiceImpl jwtService,
+                                     TokenRepository tokenRepository,
+                                     AuthenticationManager authenticationManager,
+                                     UserAnalyticsService userAnalyticsService
                                  ) {
-        this.repository = repository;
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.tokenRepository = tokenRepository;
         this.authenticationManager = authenticationManager;
-
+        this.userAnalyticsService = userAnalyticsService;
     }
 
-    public AuthenticationResponse register(User request) {
+    public AuthenticationResponse register(UserDto userDto) throws Exception {
 
         // check if user already exist. if exist than authenticate the user
-        if(repository.findByMail(request.getMail()).isPresent()) {
-            return new AuthenticationResponse(null, "User already exist",null);
+        if (userRepository.findByMail(userDto.getMail()).isPresent()) {
+            throw new Exception("User with this email already exists");
         }
 
         User user = new User();
-        user.setMail(request.getMail());
-        user.setName(request.getName());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setMail(userDto.getMail());
+        user.setName(userDto.getName());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setRole(Role.USER);
-
-        user = repository.save(user);
+        user.setCreatedAt(LocalDateTime.now());
+        UserAnalytics userAnalytics = userAnalyticsService.createUserAnalytics();
+        user.setUserAnalytics(userAnalytics);
+        user = userRepository.save(user);
 
        String jwt = jwtService.generateToken(user);
-        
-
-    
-        saveUserToken(jwt, user);
+       saveUserToken(jwt, user);
 
        return new AuthenticationResponse(null, "User registration was successful",user.getRole().toString());
-
     }
 
-    public AuthenticationResponse authenticate(User request) throws AuthenticationException {
+    public AuthenticationResponse authenticate(UserDto userDto) throws AuthenticationException {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
+                        userDto.getName(),
+                        userDto.getPassword()
                 )
         );
 
-        User user = repository.findByMail(request.getUsername()).orElseThrow();
+        User user = userRepository.findByMail(userDto.getName()).orElseThrow();
 
         String jwt = jwtService.generateToken(user);
 
-        revokeAllTokenByUser(user);
+        revokeAllTokenByUser(userDto);
         saveUserToken(jwt, user);
 
         return new AuthenticationResponse(jwt, "User login was successful",user.getRole().toString());
 
     }
     
-    private void revokeAllTokenByUser(User user) {
+    private void revokeAllTokenByUser(UserDto userDto) {
 
-        tokenRepository.deleteUserTokens((long) user.getId());
+        tokenRepository.deleteUserTokens((long) userDto.getId());
 
     }
     
-    private void saveUserToken(String jwt, User user ) {
+    private void saveUserToken(String jwt, User user) {
         Token token = new Token();
         token.setToken(jwt);
         token.setLoggedOut(false);
@@ -103,9 +101,9 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    public AuthenticationResponse registerWithGoogle(User request) {
-        if(repository.findByMail(request.getUsername()).isPresent()) {
-            return new AuthenticationResponse(null, "User already exist",null);
+    public AuthenticationResponse registerWithGoogle(UserDto userDto) {
+        if(userRepository.findByMail(userDto.getMail()).isPresent()) {
+            return new AuthenticationResponse(null, "",null);
         }
         User user = new User();
 //        user.setFullName(request.getFullName());
@@ -117,12 +115,9 @@ public class AuthenticationService {
 //        user.setAvatar(request.getAvatar());
 //        user.setLastLogin(Timestamp.from(Instant.now()));
 //        user.setIsAccountEnabled(true);
-        user = repository.save(user);
-
-
+        user = userRepository.save(user);
 
         return new AuthenticationResponse(null, "User registration was successful",user.getRole().toString());
-
     }
 
 //    public AuthenticationResponse loginWithGoogle(User request) {

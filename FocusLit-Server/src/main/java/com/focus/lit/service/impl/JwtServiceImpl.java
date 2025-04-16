@@ -16,13 +16,13 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
+public class JwtServiceImpl {
 
     @Value("${JWT_SECRET_KEY}")
     private String SECRET_KEY ;
     private final TokenRepository tokenRepository;
 
-    public JwtService(TokenRepository tokenRepository) {
+    public JwtServiceImpl(TokenRepository tokenRepository) {
         this.tokenRepository = tokenRepository;
     }
 

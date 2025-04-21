@@ -1,5 +1,6 @@
 package com.focus.lit.service;
 
+import com.focus.lit.dto.UserAnalyticsDto;
 import com.focus.lit.model.Achievement;
 import com.focus.lit.model.UserAnalytics;
 
@@ -10,4 +11,5 @@ public interface UserAnalyticsService {
     UserAnalytics createUserAnalytics();
     Optional<UserAnalytics> getUserAnalytics(int id);
     List<Achievement> getUserAchievements(int id) throws Exception;
+    UserAnalyticsDto update(UserAnalyticsDto userAnalyticsDto);
 }

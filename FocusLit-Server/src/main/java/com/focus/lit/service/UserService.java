@@ -1,8 +1,10 @@
 package com.focus.lit.service;
 
+import com.focus.lit.dto.ChangePasswordUserDto;
 import com.focus.lit.dto.UpdateUserInfoDto;
 import com.focus.lit.dto.UserDto;
 import com.focus.lit.model.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,4 +18,6 @@ public interface UserService {
     User createUser(UserDto userDto) throws Exception;
 
     User updateUser(UpdateUserInfoDto updateUserInfoDto) throws Exception;
+
+    ResponseEntity<?> changePassword(ChangePasswordUserDto changePasswordUserDto) throws Exception;
 }

@@ -20,12 +20,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.focus.lit.R
 import androidx.compose.ui.geometry.Offset
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.focus.lit.ui.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
 
     Box(
         modifier = Modifier
@@ -60,9 +62,9 @@ fun LoginScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
-                label = { Text("Username") },
+                value = email,
+                onValueChange = viewModel::onEmailChanged,
+                label = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(0.5f)
@@ -70,7 +72,7 @@ fun LoginScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = viewModel::onPasswordChanged,
                 label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
@@ -88,7 +90,7 @@ fun LoginScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    handleLogin(navController)
+                    navController.navigate("homepage")
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
@@ -109,7 +111,7 @@ fun LoginScreen(navController: NavController) {
 
 fun handleLogin(navController: NavController) {
     navController.navigate("homepage") {
-        popUpTo("login") { inclusive = true } // Removes login from back stack
+        popUpTo("login") { inclusive = true }
     }
 }
 

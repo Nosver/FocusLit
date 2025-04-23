@@ -62,5 +62,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
-
+    implementation(libs.retrofit2.retrofit)
+    implementation(libs.retrofit2.converter)
 }

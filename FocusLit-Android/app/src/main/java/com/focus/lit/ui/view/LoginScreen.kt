@@ -1,5 +1,6 @@
 package com.focus.lit.ui.view
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,11 +16,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.focus.lit.R
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.focus.lit.ui.viewmodel.LoginViewModel
@@ -28,6 +29,7 @@ import com.focus.lit.ui.viewmodel.LoginViewModel
 fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -95,7 +97,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                             handleLogin(navController)
                         },
                         onError = { errorMsg ->
-                            println("Login error: $errorMsg")
+                            Toast.makeText(context, "Login Error: ${errorMsg}", Toast.LENGTH_SHORT).show()
                         }
                     )
                 },

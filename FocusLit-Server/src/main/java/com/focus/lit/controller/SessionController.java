@@ -1,5 +1,6 @@
 package com.focus.lit.controller;
 
+import com.focus.lit.dto.EndSessionDto;
 import com.focus.lit.dto.SessionDto;
 import com.focus.lit.mapper.SessionMapper;
 import com.focus.lit.mapper.TagMapper;
@@ -48,6 +49,12 @@ public class SessionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     };
+
+    @PostMapping("/endSession")
+    public ResponseEntity<?> endSession(@RequestBody EndSessionDto endSessionDto) throws Exception {
+        sessionService.endSession(endSessionDto);
+        return ResponseEntity.ok("Session ended successfully");
+    }
 
 
     }

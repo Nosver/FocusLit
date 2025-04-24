@@ -8,4 +8,6 @@ import java.util.List;
 public interface TagService {
     public List<TagDto> getAllTags();
     public void incrementTotalWorkDuration(int increment, Tag tag);
+    void incrementTotalWorkDuration(int gainedWorkDuration, int tagId);
+    List<Tag> getSubTags(Tag tag);
 }

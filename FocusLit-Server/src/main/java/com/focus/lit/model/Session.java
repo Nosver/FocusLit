@@ -40,5 +40,8 @@ public class Session {
 
     @Column(name = "is_completed")
     private boolean isCompleted;
+    
+    @Column(name="completed_work_duration")
+    private int completedWorkDuration;
 
 }

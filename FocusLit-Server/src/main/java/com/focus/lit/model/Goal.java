@@ -28,4 +28,11 @@ public class Goal {
 
     @Column(name = "target_work_duration")
     private int targetWorkDuration;
+
+    @Column(name="completed_work_duration")
+    private int completedWorkDuration;
+
+    @ManyToOne
+    @JoinColumn(name= "user_id",referencedColumnName = "id")
+    private User user;
 }

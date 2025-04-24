@@ -55,4 +55,9 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
         userAnalytics.get().setUserRank(userAnalyticsDto.getUserRank());
         return userAnalyticsMapper.userAnalyticsToUserAnalyticsDto(userAnalytics.get());
     }
+
+    @Override
+    public void updateTotalWorkDuration(int gainedWorkDuration, int userAnalyticsId) {
+        userAnalyticsRepository.updateTotalWorkDuration(gainedWorkDuration, userAnalyticsId);
+    }
 }

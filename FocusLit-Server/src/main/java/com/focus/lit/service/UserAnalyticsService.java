@@ -12,4 +12,5 @@ public interface UserAnalyticsService {
     Optional<UserAnalytics> getUserAnalytics(int id);
     List<Achievement> getUserAchievements(int id) throws Exception;
     UserAnalyticsDto update(UserAnalyticsDto userAnalyticsDto);
+    void updateTotalWorkDuration(int gainedWorkDuration, int userAnalyticsId);
 }

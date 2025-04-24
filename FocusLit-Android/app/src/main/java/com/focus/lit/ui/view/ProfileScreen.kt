@@ -35,13 +35,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextField
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.focus.lit.ui.components.GenericIconButton
 import com.focus.lit.ui.components.ImagePagerCarousel
 
 
 @Composable
-fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = viewModel()) {
+fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hiltViewModel()) {
 
     Column(
         modifier = Modifier

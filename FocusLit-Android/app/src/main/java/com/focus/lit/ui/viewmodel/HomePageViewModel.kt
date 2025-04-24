@@ -5,8 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.State
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class HomePageViewModel : ViewModel() {
+@HiltViewModel
+class HomePageViewModel @Inject constructor() : ViewModel() {
 
     private val _streak = mutableStateOf(0)
     val streak: State<Int> = _streak

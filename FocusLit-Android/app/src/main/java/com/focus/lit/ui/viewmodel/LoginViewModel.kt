@@ -1,17 +1,26 @@
 package com.focus.lit.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.focus.lit.data.AppModule
+import com.focus.lit.data.local.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import com.focus.lit.data.model.LoginRequest
 import com.focus.lit.data.model.LoginResponse
-import com.focus.lit.data.remote.ApiClient 
+import com.focus.lit.data.remote.ApiService
+import dagger.hilt.android.lifecycle.HiltViewModel
 import org.json.JSONObject
 import retrofit2.HttpException
+import javax.inject.Inject
 
-class LoginViewModel() : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val tokenManager: TokenManager,
+    private val apiService: ApiService
+) : ViewModel() {
 
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
@@ -33,9 +42,11 @@ class LoginViewModel() : ViewModel() {
     fun login(onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             try {
-                val response = ApiClient.apiService.login(
+                val response = apiService.login(
                     LoginRequest(_email.value, _password.value)
                 )
+                val token = response.token
+                tokenManager.saveToken(token)
                 _loginResult.value = response
                 onSuccess()
             } catch (e: HttpException) {

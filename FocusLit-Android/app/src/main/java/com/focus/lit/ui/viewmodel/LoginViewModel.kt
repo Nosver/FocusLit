@@ -5,12 +5,13 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import com.focus.lit.data.remote.ApiService
 import com.focus.lit.data.model.LoginRequest
 import com.focus.lit.data.model.LoginResponse
-import com.focus.lit.data.remote.ApiClient // Retrofit builder
+import com.focus.lit.data.remote.ApiClient 
+import org.json.JSONObject
+import retrofit2.HttpException
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel() : ViewModel() {
 
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
@@ -37,9 +38,19 @@ class LoginViewModel : ViewModel() {
                 )
                 _loginResult.value = response
                 onSuccess()
+            } catch (e: HttpException) {
+                val errorBody = e.response()?.errorBody()?.string()
+                val errorMessage = try {
+                    val json = JSONObject(errorBody ?: "")
+                    json.getString("message")
+                } catch (jsonException: Exception) {
+                    "Unknown server error"
+                }
+                onError(errorMessage)
             } catch (e: Exception) {
                 onError(e.message ?: "Unknown error")
             }
         }
     }
+
 }

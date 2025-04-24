@@ -14,6 +14,8 @@ navigationCompose = "2.8.9"
 composeFoundation = "1.6.8"
 animationCoreLint = "1.8.0-rc02"
 retrofit = "2.9.0"
+coroutines = "1.7.3"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,7 +40,9 @@ androidx-compose-foundation = {group= "androidx.compose.foundation", name = "fou
 androidx-animation-core-lint = { group = "androidx.compose.animation", name = "animation-core-lint", version.ref = "animationCoreLint" }
 retrofit2-retrofit = {group = "com.squareup.retrofit2", name = "retrofit", version.ref="retrofit"}
 retrofit2-converter = {group = "com.squareup.retrofit2", name = "converter-gson", version.ref="retrofit"}
-
+androidx-datastore = {group = "androidx.datastore", name = "datastore-preferences", version = "1.0.0"}
+androidx-coroutines-core = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines"}
+androidx-coroutines-android = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

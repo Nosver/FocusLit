@@ -64,4 +64,7 @@ dependencies {
     implementation(libs.coil.gif)
     implementation(libs.retrofit2.retrofit)
     implementation(libs.retrofit2.converter)
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.coroutines.core)
+    implementation(libs.androidx.coroutines.android)
 }

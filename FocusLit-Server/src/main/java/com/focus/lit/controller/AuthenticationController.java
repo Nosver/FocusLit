@@ -2,11 +2,13 @@ package com.focus.lit.controller;
 
 
 import com.focus.lit.dto.AuthenticationResponse;
+import com.focus.lit.dto.ChangePasswordUserDto;
 import com.focus.lit.dto.UserDto;
 import com.focus.lit.model.User;
 import com.focus.lit.service.impl.AuthenticationServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,5 +63,7 @@ public class AuthenticationController {
         }
         return ResponseEntity.ok(response);
     }
+
+
 
 }

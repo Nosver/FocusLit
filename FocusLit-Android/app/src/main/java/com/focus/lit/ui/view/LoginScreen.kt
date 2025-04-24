@@ -1,5 +1,6 @@
 package com.focus.lit.ui.view
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,17 +16,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.focus.lit.R
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.focus.lit.ui.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -60,9 +64,9 @@ fun LoginScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
-                label = { Text("Username") },
+                value = email,
+                onValueChange = viewModel::onEmailChanged,
+                label = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(0.5f)
@@ -70,7 +74,7 @@ fun LoginScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = viewModel::onPasswordChanged,
                 label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
@@ -88,7 +92,14 @@ fun LoginScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    handleLogin(navController)
+                    viewModel.login(
+                        onSuccess = {
+                            handleLogin(navController)
+                        },
+                        onError = { errorMsg ->
+                            Toast.makeText(context, "Login Error: ${errorMsg}", Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
@@ -109,7 +120,7 @@ fun LoginScreen(navController: NavController) {
 
 fun handleLogin(navController: NavController) {
     navController.navigate("homepage") {
-        popUpTo("login") { inclusive = true } // Removes login from back stack
+        popUpTo("login") { inclusive = true }
     }
 }
 

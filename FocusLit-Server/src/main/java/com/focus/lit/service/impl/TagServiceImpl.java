@@ -6,12 +6,10 @@ import com.focus.lit.model.Tag;
 import com.focus.lit.repository.TagRepository;
 import com.focus.lit.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +49,30 @@ public class TagServiceImpl implements TagService {
             if(currentTag == null) { break; }
             currentTag.setTotalWorkDuration(currentTag.getTotalWorkDuration() + increment);
             tagRepository.save(currentTag);
+        }
+    }
+
+    @Override
+    public void incrementTotalWorkDuration(int gainedWorkDuration, int tagId) {
+        tagRepository.incrementTotalWorkDuration(gainedWorkDuration, tagId);
+    }
+
+    @Override
+    public List<Tag> getSubTags(Tag tag) {
+        List<Tag> result = new ArrayList<>();
+        result.add(tag);
+        fetchSubTagsRecursive(tag, result, 1);
+        return result;
+    }
+
+    private void fetchSubTagsRecursive(Tag parent, List<Tag> result, int depth) {
+        if (depth > 4) return;
+
+        List<Tag> children = tagRepository.findByParent(parent);
+        result.addAll(children);
+
+        for (Tag child : children) {
+            fetchSubTagsRecursive(child, result, depth + 1);
         }
     }
 }

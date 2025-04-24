@@ -1,5 +1,7 @@
 package com.focus.lit.service.impl;
 
+import com.focus.lit.dto.AuthenticationResponse;
+import com.focus.lit.dto.ChangePasswordUserDto;
 import com.focus.lit.dto.UpdateUserInfoDto;
 import com.focus.lit.dto.UserDto;
 import com.focus.lit.model.User;
@@ -8,6 +10,9 @@ import com.focus.lit.repository.UserRepository;
 import com.focus.lit.service.UserAnalyticsService;
 import com.focus.lit.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,6 +26,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserAnalyticsService userAnalyticsService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Optional<User> getById(Integer id) {
@@ -61,6 +68,16 @@ public class UserServiceImpl implements UserService {
         user.setName(updateUserInfoDto.getUsername());
         user.setMail(updateUserInfoDto.getEmail());
         return userRepository.save(user);
+    }
+
+    public ResponseEntity<?> changePassword(ChangePasswordUserDto changePasswordUserDto) {
+        User user = userRepository.findByMail(changePasswordUserDto.getMail()).orElseThrow();
+        if(!passwordEncoder.matches(changePasswordUserDto.getPassword(), user.getPassword())){
+            return new ResponseEntity<>("Old password is incorrect", HttpStatus.BAD_REQUEST);
+        }
+        user.setPassword(passwordEncoder.encode(changePasswordUserDto.getNewPassword()));
+        userRepository.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

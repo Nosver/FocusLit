@@ -2,6 +2,7 @@ package com.focus.lit.service.impl;
 
 
 import com.focus.lit.dto.AuthenticationResponse;
+import com.focus.lit.dto.ChangePasswordUserDto;
 import com.focus.lit.dto.UserDto;
 import com.focus.lit.model.Token;
 import com.focus.lit.model.User;
@@ -116,6 +117,8 @@ public class AuthenticationServiceImpl {
 
         return new AuthenticationResponse(null, "User registration was successful",user.getRole().toString());
     }
+
+
 
 //    public AuthenticationResponse loginWithGoogle(User request) {
 //        if(repository.findByEmail(request.getUsername()).isEmpty()) {

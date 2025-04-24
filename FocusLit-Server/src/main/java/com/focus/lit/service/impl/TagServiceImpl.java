@@ -5,6 +5,7 @@ import com.focus.lit.mapper.TagMapper;
 import com.focus.lit.model.Tag;
 import com.focus.lit.repository.TagRepository;
 import com.focus.lit.service.TagService;
+import org.apache.logging.log4j.util.InternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,8 @@ public class TagServiceImpl implements TagService {
 
     @Autowired
     private TagMapper tagMapper;
+
+    final int depthLimit = 4;
 
     @Override
     public List<TagDto> getAllTags() {
@@ -50,6 +53,38 @@ public class TagServiceImpl implements TagService {
             currentTag.setTotalWorkDuration(currentTag.getTotalWorkDuration() + increment);
             tagRepository.save(currentTag);
         }
+    }
+
+    private int getDepth(Tag tag) {
+        int depth = 0;
+        Tag currentTag = tag;
+        for (int i = 0; i < 50; i++){
+            currentTag = currentTag.getParent();
+            depth++;
+            if(currentTag == null) { break; }
+        }
+        return depth;
+    }
+
+    @Override
+    public Tag create(Tag tag) {
+
+        if (tag == null) {
+            throw new NullPointerException("Given tag is null");
+        }
+
+        // If parent tag is already depth limit throw error
+        Tag parentTag = tag.getParent();
+        int depth = getDepth(tag);
+
+        if (depth == depthLimit) {
+            throw new IllegalArgumentException("Depth limit reached for tag: " + tag.getId());
+        }
+        else if (depth > depthLimit) {
+            throw new InternalException("Depth limit exceeded!");
+        }
+
+        return tagRepository.save(tag);
     }
 
     @Override

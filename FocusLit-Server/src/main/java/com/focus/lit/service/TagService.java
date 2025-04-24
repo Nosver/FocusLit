@@ -10,4 +10,6 @@ public interface TagService {
     public void incrementTotalWorkDuration(int increment, Tag tag);
     void incrementTotalWorkDuration(int gainedWorkDuration, int tagId);
     List<Tag> getSubTags(Tag tag);
+    public Tag create(Tag tag);
+
 }

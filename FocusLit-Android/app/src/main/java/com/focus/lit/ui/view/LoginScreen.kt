@@ -90,7 +90,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    navController.navigate("homepage")
+                    viewModel.login(
+                        onSuccess = {
+                            handleLogin(navController)
+                        },
+                        onError = { errorMsg ->
+                            println("Login error: $errorMsg")
+                        }
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)

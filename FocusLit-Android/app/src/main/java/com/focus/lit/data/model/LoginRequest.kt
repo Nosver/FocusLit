@@ -1,6 +1,6 @@
 package com.focus.lit.data.model
 
 data class LoginRequest(
-    val email: String,
+    val mail: String,
     val password: String
 )

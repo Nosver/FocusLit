@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .navigationBarsPadding(),
                     bottomBar = {
-                        if (currentRoute != "login" && currentRoute!="timer") {
+                        if (currentRoute != "login" && currentRoute !="register" && currentRoute!="timer") {
                             NavigationBarSample(navController)
                         }
                     }

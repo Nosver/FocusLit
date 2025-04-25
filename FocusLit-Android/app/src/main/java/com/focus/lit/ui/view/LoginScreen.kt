@@ -87,7 +87,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 Text("Do not have account? ")
                 Text(
                     "Register Here",
-                    modifier = Modifier.clickable(onClick = { navController.navigate("Register") })
+                    modifier = Modifier.clickable(onClick = { navController.navigate("register") })
                 )
             }
                 Spacer(modifier = Modifier.height(16.dp))

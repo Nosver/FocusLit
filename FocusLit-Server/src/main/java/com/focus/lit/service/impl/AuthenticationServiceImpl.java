@@ -11,10 +11,13 @@ import com.focus.lit.model.enums.Role;
 import com.focus.lit.repository.TokenRepository;
 import com.focus.lit.repository.UserRepository;
 import com.focus.lit.service.UserAnalyticsService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.naming.AuthenticationException;
 import java.time.LocalDateTime;
@@ -46,11 +49,16 @@ public class AuthenticationServiceImpl {
         this.userAnalyticsService = userAnalyticsService;
     }
 
-    public AuthenticationResponse register(UserDto userDto) throws Exception {
+    public AuthenticationResponse register(UserDto userDto)  {
+
+        // check if all fields are filled
+        if(!StringUtils.hasText(userDto.getMail()) || !StringUtils.hasText(userDto.getPassword()) || !StringUtils.hasText(userDto.getName())){
+            return new AuthenticationResponse(null, "All fields must be filled", null);
+        }
 
         // check if user already exist. if exist than authenticate the user
         if (userRepository.findByMail(userDto.getMail()).isPresent()) {
-            throw new Exception("User with this email already exists");
+            return new AuthenticationResponse(null, "User with this email already exists", null);
         }
 
         User user = new User();
@@ -66,10 +74,17 @@ public class AuthenticationServiceImpl {
        String jwt = jwtService.generateToken(user);
        saveUserToken(jwt, user);
 
-       return new AuthenticationResponse(null, "User registration was successful",user.getRole().toString());
+       // with current logic we must send the token
+       return new AuthenticationResponse(jwt, "User registration was successful",user.getRole().toString());
     }
 
-    public AuthenticationResponse authenticate(UserDto userDto) throws AuthenticationException {
+    public AuthenticationResponse authenticate(UserDto userDto)  {
+
+        // check if all fields are filled
+        if(!StringUtils.hasText(userDto.getMail()) || !StringUtils.hasText(userDto.getPassword())){
+            return new AuthenticationResponse(null, "All fields must be filled", null);
+        }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userDto.getMail(),
@@ -83,7 +98,7 @@ public class AuthenticationServiceImpl {
         revokeAllTokenByUser(userDto);
         saveUserToken(jwt, user);
 
-        return new AuthenticationResponse(jwt, "User login was successful",user.getRole().toString());
+        return new AuthenticationResponse(jwt, "User login was successful", user.getRole().toString());
     }
     
     private void revokeAllTokenByUser(UserDto userDto) {

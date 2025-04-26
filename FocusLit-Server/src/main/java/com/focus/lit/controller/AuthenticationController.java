@@ -24,18 +24,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(
+    public ResponseEntity<AuthenticationResponse> register(
             @RequestBody UserDto userDto) {
         try{
-            if(!StringUtils.hasText(userDto.getMail()) || !StringUtils.hasText(userDto.getPassword()) || !StringUtils.hasText(userDto.getName())){
-                return ResponseEntity.badRequest().body("All fields should be filled");
+            AuthenticationResponse authenticationResponse = authService.register(userDto);
+            if(authenticationResponse.getToken().isEmpty()){
+                return ResponseEntity.badRequest().body(authenticationResponse);
             }
-            authService.register(userDto);
-            return ResponseEntity.ok().body("User is successfully created");
+            return ResponseEntity.ok().body(authenticationResponse);
         }catch(Exception e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthenticationResponse(null, e.getMessage(), null));        }
     }
 
     @PostMapping("/admin_only/registerAdminAndEmployee")
@@ -49,9 +48,9 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> login(@RequestBody UserDto userDto) {
         try {
             return ResponseEntity.ok(authService.authenticate(userDto));
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AuthenticationResponse(null, "Authentication error", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new AuthenticationResponse(null, e.getMessage(), null));
         }
     }
 

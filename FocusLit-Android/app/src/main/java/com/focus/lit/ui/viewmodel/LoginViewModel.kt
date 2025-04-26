@@ -42,26 +42,38 @@ class LoginViewModel @Inject constructor(
     fun login(onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             try {
+                // Perform the login API call
                 val response = apiService.login(
                     LoginRequest(_email.value, _password.value)
                 )
-                val token = response.token
-                tokenManager.saveToken(token)
+
+                // No need to check token here. If we got here, login was successful
+                tokenManager.saveToken(response.token)  // Save the token
                 _loginResult.value = response
-                onSuccess()
+                onSuccess()  // Proceed to the success path
+
             } catch (e: HttpException) {
+                // Handle HTTP errors (e.g., 400 Bad Request from backend)
                 val errorBody = e.response()?.errorBody()?.string()
+
+                // Parse the error message from the server's response
                 val errorMessage = try {
                     val json = JSONObject(errorBody ?: "")
-                    json.getString("message")
+                    Log.d("LOGIN_ERROR", json.toString()) // Log response for debugging
+                    json.getString("message")  // Extract the error message sent from the backend
                 } catch (jsonException: Exception) {
                     "Unknown server error"
                 }
+
+                // Show the error message to the user
                 onError(errorMessage)
+
             } catch (e: Exception) {
+                // Handle unexpected errors (e.g., network issues)
                 onError(e.message ?: "Unknown error")
             }
         }
     }
+
 
 }

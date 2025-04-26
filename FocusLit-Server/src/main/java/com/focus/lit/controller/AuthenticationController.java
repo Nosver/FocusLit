@@ -28,7 +28,7 @@ public class AuthenticationController {
             @RequestBody UserDto userDto) {
         try{
             AuthenticationResponse authenticationResponse = authService.register(userDto);
-            if(authenticationResponse.getToken().isEmpty()){
+            if(authenticationResponse.getToken() == null){
                 return ResponseEntity.badRequest().body(authenticationResponse);
             }
             return ResponseEntity.ok().body(authenticationResponse);
@@ -47,7 +47,12 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody UserDto userDto) {
         try {
-            return ResponseEntity.ok(authService.authenticate(userDto));
+            AuthenticationResponse response = authService.authenticate(userDto);
+            if (response.getToken() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(response);
+            }
+            return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new AuthenticationResponse(null, e.getMessage(), null));

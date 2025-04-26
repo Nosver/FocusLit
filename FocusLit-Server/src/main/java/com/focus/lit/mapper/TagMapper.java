@@ -6,13 +6,18 @@ import com.focus.lit.model.Tag;
 import com.focus.lit.service.TagService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring", imports = TagService.class)
-public interface TagMapper {
+@Mapper(componentModel = "spring")
+public abstract class TagMapper {
+    @Autowired
+    protected TagService tagService;
+
     @Mapping(source = "parent.id", target = "parentId")
-    TagDto tagToTagDto(Tag session);
+    public abstract TagDto tagToTagDto(Tag session);
 
-    // If parent tag does not exists set parent Integer obj to null if exists fetch and set
     @Mapping(target = "parent", expression = "java(dto.getParentId() != null ? tagService.findById(dto.getParentId()) : null)")
-    Tag tagDtoToTag(TagDto dto);
+    public abstract Tag tagDtoToTag(TagDto dto);
+
+
 }

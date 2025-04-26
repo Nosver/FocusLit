@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    kotlin("kapt")
 }
 
 android {
@@ -64,4 +66,15 @@ dependencies {
     implementation(libs.coil.gif)
     implementation(libs.retrofit2.retrofit)
     implementation(libs.retrofit2.converter)
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.coroutines.core)
+    implementation(libs.androidx.coroutines.android)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.complier)
+    implementation(libs.androidx.hilt.nav)
+
+    hilt {
+        enableAggregatingTask = false
+    }
 }
+

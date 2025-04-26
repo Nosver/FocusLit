@@ -1,5 +1,6 @@
 package com.focus.lit.ui.view
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -17,15 +18,21 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.focus.lit.R
+import com.focus.lit.ui.viewmodel.LoginViewModel
+import com.focus.lit.ui.viewmodel.RegisterViewModel
 
 @Composable
-fun RegisterScreen(navController: NavController) {
-    var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
+fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
+    val username by viewModel.username.collectAsState()
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
+    val confirmPassword by viewModel.passwordConfirm.collectAsState()
+
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -62,7 +69,7 @@ fun RegisterScreen(navController: NavController) {
 
             OutlinedTextField(
                 value = username,
-                onValueChange = { username = it },
+                onValueChange =  viewModel::onUsernameChanged ,
                 label = { Text("Username") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -72,7 +79,7 @@ fun RegisterScreen(navController: NavController) {
 
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = viewModel::onEmailChanged,
                 label = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -82,7 +89,7 @@ fun RegisterScreen(navController: NavController) {
 
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = viewModel::onPasswordChanged,
                 label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
@@ -93,7 +100,7 @@ fun RegisterScreen(navController: NavController) {
 
             OutlinedTextField(
                 value = confirmPassword,
-                onValueChange = { confirmPassword = it },
+                onValueChange = viewModel::onPasswordConfirmChange,
                 label = { Text("Confirm Password") },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier
@@ -103,7 +110,20 @@ fun RegisterScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { handleRegister(navController) },
+                onClick = {
+                    viewModel.register(
+                        onSuccess = {
+                            handleRegister(navController)
+                        },
+                        onError = {
+                            err -> Toast.makeText(context,"Register Error: ${err}  ",Toast.LENGTH_SHORT).show()
+                        }
+                    )
+
+                },
+
+
+
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
@@ -124,7 +144,7 @@ fun RegisterScreen(navController: NavController) {
 
 fun handleRegister(navController: NavController) {
 
-    navController.navigate("homepage") {
+    navController.navigate("login") {
         popUpTo("register") { inclusive = true }
     }
 }

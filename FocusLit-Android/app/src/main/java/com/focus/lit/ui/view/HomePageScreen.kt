@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.focus.lit.R
@@ -25,7 +26,7 @@ import com.focus.lit.ui.viewmodel.HomePageViewModel
 @Composable
 fun HomePage(
     navController: NavHostController,
-    viewModel: HomePageViewModel = viewModel()
+    viewModel: HomePageViewModel = hiltViewModel()
 ) {
     val streak by viewModel.streak
     val totalWorkDuration by viewModel.totalWorkDuration

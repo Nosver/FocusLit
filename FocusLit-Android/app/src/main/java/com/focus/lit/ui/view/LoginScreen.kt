@@ -21,12 +21,13 @@ import androidx.compose.ui.unit.sp
 import com.focus.lit.R
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.focus.lit.ui.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
+fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
     val context = LocalContext.current
@@ -86,7 +87,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
                 Text("Do not have account? ")
                 Text(
                     "Register Here",
-                    modifier = Modifier.clickable(onClick = { navController.navigate("Register") })
+                    modifier = Modifier.clickable(onClick = { navController.navigate("register") })
                 )
             }
                 Spacer(modifier = Modifier.height(16.dp))

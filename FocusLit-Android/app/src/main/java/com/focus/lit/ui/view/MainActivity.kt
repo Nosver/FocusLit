@@ -23,7 +23,9 @@ import androidx.navigation.compose.rememberNavController
 import com.focus.lit.ui.navigation.NavigationBarSample
 import com.focus.lit.ui.navigation.NavigationGraph
 import com.focus.lit.utils.FocusLitMobileTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .navigationBarsPadding(),
                     bottomBar = {
-                        if (currentRoute != "login" && currentRoute!="timer") {
+                        if (currentRoute != "login" && currentRoute !="register" && currentRoute!="timer") {
                             NavigationBarSample(navController)
                         }
                     }

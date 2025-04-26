@@ -68,9 +68,14 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag create(Tag tag) {
-
+        
         if (tag == null) {
             throw new NullPointerException("Given tag is null");
+        }
+
+        // If tag is root
+        if (tag.getParent() == null) {
+            return tagRepository.save(tag);
         }
 
         // If parent tag is already depth limit throw error
@@ -85,6 +90,11 @@ public class TagServiceImpl implements TagService {
         }
 
         return tagRepository.save(tag);
+    }
+
+    @Override
+    public Tag findById(int id) {
+        return tagRepository.findById(id).isPresent() ? tagRepository.findById(id).get() : null;
     }
 
     @Override

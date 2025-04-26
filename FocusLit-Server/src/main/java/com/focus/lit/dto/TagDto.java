@@ -11,6 +11,6 @@ public class TagDto {
     private int id;
     private String name;
     private int totalWorkDuration;
-    private int parentId;
+    private Integer parentId; // Nullable in case of root tag
 
 }

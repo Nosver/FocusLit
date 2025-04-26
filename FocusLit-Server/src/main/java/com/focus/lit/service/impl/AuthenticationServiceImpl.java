@@ -50,7 +50,7 @@ public class AuthenticationServiceImpl {
 
         // check if user already exist. if exist than authenticate the user
         if (userRepository.findByMail(userDto.getMail()).isPresent()) {
-            throw new Exception("User with this email already exists");
+            return new AuthenticationResponse(null, "User with given mail already exists", null);
         }
 
         User user = new User();

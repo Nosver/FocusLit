@@ -5,11 +5,13 @@ import com.focus.lit.mapper.TagMapper;
 import com.focus.lit.model.Tag;
 import com.focus.lit.repository.TagRepository;
 import com.focus.lit.service.TagService;
+import com.focus.lit.service.TelegramService;
 import org.apache.logging.log4j.util.InternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,9 @@ public class TagServiceImpl implements TagService {
 
     @Autowired
     private TagMapper tagMapper;
+
+    @Autowired
+    private TelegramService telegramService;
 
     final int depthLimit = 4;
 
@@ -34,9 +39,6 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void incrementTotalWorkDuration(int increment, Tag tag) {
-
-        // FIXME: Implement depthLimit in createTag
-        final int depthLimit = 4;
 
         if(tag == null) {
             throw new NullPointerException("Given tag is null");
@@ -66,34 +68,58 @@ public class TagServiceImpl implements TagService {
         return depth;
     }
 
+    private String buildFullPath(Tag tag) {
+        if (tag == null) {
+            throw new NullPointerException("Tag is null");
+        }
+
+        List<String> names = new ArrayList<>();
+        Tag current = tag;
+        int counter = 0;
+
+        while (current != null) {
+            names.add(current.getName());
+            current = current.getParent();
+            counter++;
+
+            if (counter > 50) {
+                throw new IllegalStateException("Tag hierarchy too deep! (50+). This should NEVER happen");
+            }
+        }
+
+        Collections.reverse(names);
+
+        if (names.isEmpty()) {
+            throw new IllegalStateException("Cannot build path for empty tag names");
+        }
+
+        return String.join("/", names);
+    }
+
+
     @Override
     public Tag create(Tag tag) {
-        
         if (tag == null) {
             throw new NullPointerException("Given tag is null");
         }
 
-        if (tag.getParent() == null) {
-            return tagRepository.save(tag);
-        }
-
-        // If parent tag is already depth limit throw error
-        Tag parentTag = tag.getParent();
+        tag.setFullPath(buildFullPath(tag));
         int depth = getDepth(tag);
 
-        if (depth == depthLimit) {
-            throw new IllegalArgumentException("Depth limit reached for tag: " + tag.getId() + ", Tag Name: " + tag.getName());
-        }
-        else if (depth > depthLimit) {
+        if (depth > depthLimit) {
             throw new InternalException("Depth limit exceeded!");
         }
+
+        Integer threadId = telegramService.createForumTopic(tag.getFullPath());
+        tag.setTThreadId(threadId);
 
         return tagRepository.save(tag);
     }
 
+
     @Override
     public Tag findById(int id) {
-        return tagRepository.findById(id).isPresent() ? tagRepository.findById(id).get() : null;
+        return tagRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -110,7 +136,9 @@ public class TagServiceImpl implements TagService {
     }
 
     private void fetchSubTagsRecursive(Tag parent, List<Tag> result, int depth) {
-        if (depth > 4) return;
+        if (depth > depthLimit) {
+            return;
+        }
 
         List<Tag> children = tagRepository.findByParent(parent);
         result.addAll(children);

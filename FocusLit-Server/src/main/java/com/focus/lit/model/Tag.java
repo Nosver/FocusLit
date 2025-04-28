@@ -1,5 +1,6 @@
 package com.focus.lit.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,5 +25,11 @@ public class Tag {
 
     @Column(name = "total_work_duration")
     private int totalWorkDuration;
+
+    @Column(name = "full_path", nullable = false, unique = true)
+    private String fullPath;
+
+    @Column(name = "t_thread_id", nullable = false)
+    private Integer tThreadId;
 
 }

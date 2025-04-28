@@ -73,7 +73,6 @@ public class TagServiceImpl implements TagService {
             throw new NullPointerException("Given tag is null");
         }
 
-        // If tag is root
         if (tag.getParent() == null) {
             return tagRepository.save(tag);
         }
@@ -83,7 +82,7 @@ public class TagServiceImpl implements TagService {
         int depth = getDepth(tag);
 
         if (depth == depthLimit) {
-            throw new IllegalArgumentException("Depth limit reached for tag: " + tag.getId());
+            throw new IllegalArgumentException("Depth limit reached for tag: " + tag.getId() + ", Tag Name: " + tag.getName());
         }
         else if (depth > depthLimit) {
             throw new InternalException("Depth limit exceeded!");

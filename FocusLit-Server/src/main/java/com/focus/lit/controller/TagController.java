@@ -6,6 +6,7 @@ import com.focus.lit.mapper.TagMapper;
 import com.focus.lit.model.Tag;
 import com.focus.lit.service.TagService;
 import com.focus.lit.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,8 @@ public class TagController {
         return ResponseEntity.ok(tagService.getAllTags());
     }
 
-    // FIXME: In progress
     @PostMapping("/create")
-    public ResponseEntity<TagDto> create(@RequestBody TagDto tagDto) {
+    public ResponseEntity<?> create(@RequestBody TagDto tagDto) {
         try{
             Tag tag = tagMapper.tagDtoToTag(tagDto);
             Tag createdTag = tagService.create(tag);
@@ -38,7 +38,7 @@ public class TagController {
             return new ResponseEntity<>(createdTagDto, HttpStatus.CREATED);
         }catch (Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

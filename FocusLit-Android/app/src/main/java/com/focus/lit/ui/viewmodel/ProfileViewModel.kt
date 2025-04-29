@@ -1,20 +1,34 @@
 package com.focus.lit.ui.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.focus.lit.R
+import com.focus.lit.data.local.TokenManager
+import com.focus.lit.data.model.UserInfo
+import com.focus.lit.data.model.UserProfileChangeBody
+import com.focus.lit.data.remote.ApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor() : ViewModel() {
+class ProfileViewModel @Inject constructor(
+    private val apiService: ApiService,
+    private val tokenManager: TokenManager
+) : ViewModel() {
 
-    var userName by mutableStateOf("Jane Doe")
+    var userName by mutableStateOf("")
 
-    var email by mutableStateOf("janedoe@gmail.com")
+    var email by mutableStateOf("")
+
+    var changedUsername by mutableStateOf("")
+
+    var changedEmail by mutableStateOf("")
 
     var changeComponentState by mutableStateOf(false)
 
@@ -28,8 +42,41 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
     )
     private set
 
-    fun changeComponentState(){
-        changeComponentState = !changeComponentState
+    public fun fetchUserInfo() {
+        viewModelScope.launch {
+            try {
+                val userId = tokenManager.getId();
+                Log.d("ID", userId.toString())
+                val userInfo = apiService.getUser(userId)
+                userName = userInfo.name
+                email = userInfo.mail
+                changedEmail = userInfo.mail
+                changedUsername = userInfo.name
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    public fun adjustProfile(){
+        if(!changeComponentState){
+            changeComponentState = !changeComponentState
+            return;
+        };
+        viewModelScope.launch {
+            try {
+                if (changedEmail == email && changedUsername == userName) {
+                    changeComponentState = !changeComponentState
+                    return@launch;
+                }
+                val body = UserProfileChangeBody(tokenManager.getId(), changedEmail, changedUsername);
+                apiService.updateUser(body);
+                fetchUserInfo()
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+            changeComponentState = !changeComponentState
+        }
     }
 
 }

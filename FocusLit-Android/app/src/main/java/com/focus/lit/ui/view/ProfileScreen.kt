@@ -33,6 +33,8 @@ import com.focus.lit.ui.viewmodel.ProfileViewModel
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -43,6 +45,11 @@ import com.focus.lit.ui.components.ImagePagerCarousel
 
 @Composable
 fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hiltViewModel()) {
+    val navBackStackEntry = remember { navController.currentBackStackEntry }
+
+    LaunchedEffect(navBackStackEntry) {
+        viewModel.fetchUserInfo()
+    }
 
     Column(
         modifier = Modifier
@@ -57,9 +64,9 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Absolute.SpaceBetween) {
                 GenericIconButton(icon = Icons.Default.Settings, onClick = { navController.navigate("settings") })
                 if(viewModel.changeComponentState){
-                    GenericIconButton(icon = Icons.Default.Clear)
+                    GenericIconButton(icon = Icons.Default.Clear, onClick = {viewModel.changeComponentState = !viewModel.changeComponentState})
                 }
-                GenericIconButton(icon = Icons.Default.Create, onClick = {viewModel.changeComponentState()} )
+                GenericIconButton(icon = Icons.Default.Create, onClick = {viewModel.adjustProfile()})
 
             }
             Spacer(modifier = Modifier.height(30.dp))
@@ -72,8 +79,8 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                     .border(2.dp, Color.Gray, CircleShape)
             )
             BasicTextField(
-                value = viewModel.userName,
-                onValueChange = {viewModel.userName = it},
+                value = viewModel.changedUsername,
+                onValueChange = {viewModel.changedUsername = it},
                 modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
                 textStyle = TextStyle(
                 fontSize = 18.sp,
@@ -97,8 +104,8 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
         ) {
             Text(text = "Email", fontSize = 16.sp, fontWeight = FontWeight.Bold)
             BasicTextField(
-                value = viewModel.email,
-                onValueChange = {viewModel.email = it},
+                value = viewModel.changedEmail,
+                onValueChange = {viewModel.changedEmail = it},
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(
                     fontSize = 15.sp,

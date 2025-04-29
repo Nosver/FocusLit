@@ -34,7 +34,7 @@ public class AuthenticationController {
             return ResponseEntity.ok().body(authenticationResponse);
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new AuthenticationResponse(null, e.getMessage(), null));        }
+                    .body(new AuthenticationResponse(null, e.getMessage(), null, -1));        }
     }
 
 
@@ -50,7 +50,7 @@ public class AuthenticationController {
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new AuthenticationResponse(null, e.getMessage(), null));
+                    .body(new AuthenticationResponse(null, e.getMessage(), null, -1));
         }
     }
 

@@ -53,12 +53,12 @@ public class AuthenticationServiceImpl {
 
         // check if all fields are filled
         if(!StringUtils.hasText(userDto.getMail()) || !StringUtils.hasText(userDto.getPassword()) || !StringUtils.hasText(userDto.getName())){
-            return new AuthenticationResponse(null, "All fields must be filled", null);
+            return new AuthenticationResponse(null, "All fields must be filled", null, -1);
         }
 
         // check if user already exist. if exist than authenticate the user
         if (userRepository.findByMail(userDto.getMail()).isPresent()) {
-            return new AuthenticationResponse(null, "User with this email already exists", null);
+            return new AuthenticationResponse(null, "User with this email already exists", null, -1);
         }
 
         User user = new User();
@@ -75,14 +75,14 @@ public class AuthenticationServiceImpl {
        saveUserToken(jwt, user);
 
        // with current logic we must send the token
-       return new AuthenticationResponse(jwt, "User registration was successful",user.getRole().toString());
+       return new AuthenticationResponse(jwt, "User registration was successful",user.getRole().toString(), user.getId());
     }
 
     public AuthenticationResponse authenticate(UserDto userDto)  {
 
         // check if all fields are filled
         if(!StringUtils.hasText(userDto.getMail()) || !StringUtils.hasText(userDto.getPassword())){
-            return new AuthenticationResponse(null, "All fields must be filled", null);
+            return new AuthenticationResponse(null, "All fields must be filled", null, -1);
         }
 
         authenticationManager.authenticate(
@@ -98,7 +98,7 @@ public class AuthenticationServiceImpl {
         revokeAllTokenByUser(userDto);
         saveUserToken(jwt, user);
 
-        return new AuthenticationResponse(jwt, "User login was successful", user.getRole().toString());
+        return new AuthenticationResponse(jwt, "User login was successful", user.getRole().toString(), user.getId());
     }
     
     private void revokeAllTokenByUser(UserDto userDto) {
@@ -116,7 +116,7 @@ public class AuthenticationServiceImpl {
 
     public AuthenticationResponse registerWithGoogle(UserDto userDto) {
         if(userRepository.findByMail(userDto.getMail()).isPresent()) {
-            return new AuthenticationResponse(null, "",null);
+            return new AuthenticationResponse(null, "",null, -1);
         }
         User user = new User();
 //        user.setFullName(request.getFullName());
@@ -130,7 +130,7 @@ public class AuthenticationServiceImpl {
 //        user.setIsAccountEnabled(true);
         user = userRepository.save(user);
 
-        return new AuthenticationResponse(null, "User registration was successful",user.getRole().toString());
+        return new AuthenticationResponse(null, "User registration was successful",user.getRole().toString(), user.getId());
     }
 
 

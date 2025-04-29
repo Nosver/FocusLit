@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -103,7 +104,13 @@ public class TagServiceImpl implements TagService {
             throw new NullPointerException("Given tag is null");
         }
 
-        tag.setFullPath(buildFullPath(tag));
+
+        Optional<Tag> t= tagRepository.findByName(tag.getName());
+        if(t.isPresent()){
+            throw new IllegalArgumentException("Tag already exists");
+        }
+
+    tag.setFullPath(buildFullPath(tag));
         int depth = getDepth(tag);
 
         if (depth > depthLimit) {

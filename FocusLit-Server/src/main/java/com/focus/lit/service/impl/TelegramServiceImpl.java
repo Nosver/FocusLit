@@ -1,6 +1,7 @@
 package com.focus.lit.service.impl;
 
 import com.focus.lit.service.TelegramService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,7 +22,8 @@ public class TelegramServiceImpl implements TelegramService {
     @Value("${T_CHAT_ID}")
     private String chatId;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public Integer createForumTopic(String topicName) {

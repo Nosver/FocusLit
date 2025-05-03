@@ -12,5 +12,6 @@ public class TagDto {
     private String name;
     private int totalWorkDuration;
     private Integer parentId; // Nullable in case of root tag
-
+    private String fullPath;
+    private Integer tThreadId;
 }

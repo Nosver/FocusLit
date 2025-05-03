@@ -29,6 +29,13 @@ public class TagController {
         return ResponseEntity.ok(tagService.getAllTags());
     }
 
+    @GetMapping("/get")
+    public ResponseEntity<TagDto> get(@RequestParam("id") Integer id) {
+        TagDto tagDto = tagMapper.tagToTagDto(tagService.getById(id));
+        if (tagDto == null) { return ResponseEntity.notFound().build(); }
+        return new ResponseEntity<>(tagDto, HttpStatus.OK);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody TagDto tagDto) {
         try{

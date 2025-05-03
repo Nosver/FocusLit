@@ -131,6 +131,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public Tag getById(Integer id) {
+        return tagRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public void incrementTotalWorkDuration(int gainedWorkDuration, int tagId) {
         tagRepository.incrementTotalWorkDuration(gainedWorkDuration, tagId);
     }

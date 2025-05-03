@@ -1,6 +1,7 @@
 package com.focus.lit.data.remote
 
 import com.focus.lit.data.model.AddTagRequest
+import com.focus.lit.data.model.ChangePasswordRequest
 import com.focus.lit.data.model.LoginRequest
 import com.focus.lit.data.model.LoginResponse
 import com.focus.lit.data.model.RegisterRequest
@@ -30,4 +31,8 @@ interface ApiService {
 
     @GET("tag/getAll")
     suspend fun getAllTags():List<Tag>
+
+    @POST("user/changePassword")
+    suspend fun changePassword(@Body request: ChangePasswordRequest)
+
 }

@@ -47,6 +47,7 @@ class LoginViewModel @Inject constructor(
                 )
 
                 tokenManager.saveToken(response.token)
+                tokenManager.saveId(response.userId)
                 _loginResult.value = response
                 onSuccess()
 

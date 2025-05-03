@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TagRepository extends JpaRepository<Tag, Integer> {
     List<Tag> getTagById(int id);
@@ -16,4 +17,6 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
     void incrementTotalWorkDuration(@Param("gainedWorkDuration") int gainedWorkDuration, @Param("tagId")  int tagId);
 
     List<Tag> findByParent(Tag parent);
+
+    Optional<Tag> findByName(String name);
 }

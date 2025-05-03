@@ -37,11 +37,6 @@ public class AuthenticationController {
                     .body(new AuthenticationResponse(null, e.getMessage(), null, -1));        }
     }
 
-    @PostMapping("/admin_only/registerAdminAndEmployee")
-    public ResponseEntity<AuthenticationResponse> registerAdminAndEmployee(
-            @RequestBody UserDto userDto) throws Exception {
-            return ResponseEntity.ok(authService.register(userDto));
-    }
 
 
     @PostMapping("/login")
@@ -59,15 +54,6 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/googleRegister")
-    public ResponseEntity<AuthenticationResponse> googleRegister(@RequestBody UserDto userDto) {
-        AuthenticationResponse response = authService.registerWithGoogle(userDto);
-        if (response.getMessage().equals("User already exist")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-        return ResponseEntity.ok(response);
-    }
-
-
+ 
 
 }

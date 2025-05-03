@@ -1,9 +1,6 @@
 package com.focus.lit.service.impl;
 
-import com.focus.lit.dto.AuthenticationResponse;
-import com.focus.lit.dto.ChangePasswordUserDto;
-import com.focus.lit.dto.UpdateUserInfoDto;
-import com.focus.lit.dto.UserDto;
+import com.focus.lit.dto.*;
 import com.focus.lit.model.User;
 import com.focus.lit.model.UserAnalytics;
 import com.focus.lit.repository.UserRepository;
@@ -73,11 +70,11 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<?> changePassword(ChangePasswordUserDto changePasswordUserDto) {
         User user = userRepository.findByMail(changePasswordUserDto.getMail()).orElseThrow();
         if(!passwordEncoder.matches(changePasswordUserDto.getPassword(), user.getPassword())){
-            return new ResponseEntity<>("Old password is incorrect", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDto("Old password is incorrect"));
         }
         user.setPassword(passwordEncoder.encode(changePasswordUserDto.getNewPassword()));
         userRepository.save(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

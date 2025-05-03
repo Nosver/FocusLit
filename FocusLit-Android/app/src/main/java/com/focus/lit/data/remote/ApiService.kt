@@ -1,10 +1,17 @@
 package com.focus.lit.data.remote
 
+import com.focus.lit.data.model.AddTagRequest
+import com.focus.lit.data.model.ChangePasswordRequest
 import com.focus.lit.data.model.LoginRequest
 import com.focus.lit.data.model.LoginResponse
 import com.focus.lit.data.model.RegisterRequest
+import com.focus.lit.data.model.Tag
+import com.focus.lit.data.model.UserInfo
+import com.focus.lit.data.model.UserProfileChangeBody
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
     @POST("login")
@@ -12,4 +19,20 @@ interface ApiService {
 
     @POST("register")
     suspend fun register(@Body request: RegisterRequest)
+
+    @GET("user/get")
+    suspend fun getUser(@Query("id") userId: Int?): UserInfo
+
+    @POST("user/update")
+    suspend fun updateUser(@Body request: UserProfileChangeBody)
+
+    @POST("tag/create")
+    suspend fun createTag(@Body request: AddTagRequest)
+
+    @GET("tag/getAll")
+    suspend fun getAllTags():List<Tag>
+
+    @POST("user/changePassword")
+    suspend fun changePassword(@Body request: ChangePasswordRequest)
+
 }

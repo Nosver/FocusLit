@@ -33,10 +33,10 @@ public class Session {
     @Column(name = "wait_duration")
     private int waitDuration;
 
-    private int score;
+    private double score;
 
     @Column(name = "score_multiplier")
-    private float scoreMultiplier;
+    private double scoreMultiplier;
 
     @Column(name = "is_completed")
     private boolean isCompleted;

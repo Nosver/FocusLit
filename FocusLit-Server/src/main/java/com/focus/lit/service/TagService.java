@@ -12,4 +12,5 @@ public interface TagService {
     List<Tag> getSubTags(Tag tag);
     public Tag create(Tag tag);
     public Tag findById(int id);
+    Tag getById(Integer id);
 }

@@ -1,8 +1,10 @@
 package com.focus.lit.data.remote
 
+import com.focus.lit.data.model.AddTagRequest
 import com.focus.lit.data.model.LoginRequest
 import com.focus.lit.data.model.LoginResponse
 import com.focus.lit.data.model.RegisterRequest
+import com.focus.lit.data.model.Tag
 import com.focus.lit.data.model.UserInfo
 import com.focus.lit.data.model.UserProfileChangeBody
 import retrofit2.http.Body
@@ -22,4 +24,10 @@ interface ApiService {
 
     @POST("user/update")
     suspend fun updateUser(@Body request: UserProfileChangeBody)
+
+    @POST("tag/create")
+    suspend fun createTag(@Body request: AddTagRequest)
+
+    @GET("tag/getAll")
+    suspend fun getAllTags():List<Tag>
 }

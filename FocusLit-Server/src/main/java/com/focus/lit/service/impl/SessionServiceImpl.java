@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class SessionServiceImpl implements SessionService {
 
     @Autowired
     private UserRepository userRepository;
-    
+
     @Autowired
     private UserAnalyticsService userAnalyticsService;
 
@@ -35,14 +36,61 @@ public class SessionServiceImpl implements SessionService {
     @Autowired
     private UserService userService;
 
+    private final double dayMultiplier = 1.1;
+    private final double scoreByMinute = 1.0;
+    private final double toleranceInMinute = 5.0;
+
+
+    private int getCurrentDayStreak(Session session) {
+        Optional<User> userOptional = userRepository.findById(session.getUser().getId());
+        if (userOptional.isEmpty()) {
+            throw new IllegalArgumentException("Cannot find user");
+        }
+
+        User user = userOptional.get();
+        List<Session> completedSessions = sessionRepository.findCompletedSessionsByUserId(user.getId());
+
+        int streak = 0;
+        LocalDate today = LocalDate.now();
+
+        for (Session completedSession : completedSessions) {
+            LocalDate sessionDate = completedSession.getStartTime().toLocalDate();
+
+            if (sessionDate.isEqual(today)) {
+                streak++;
+            }
+        }
+
+        return streak;
+    }
+
+    private double getSessionScore(Session session) { // FIXME: THis is not recognizing the completed instead taking all
+        if (session == null) {
+            throw new IllegalArgumentException("Cannot find session");
+        }
+        if (session.isCompleted()) {
+            return session.getWorkDuration() * scoreByMinute * session.getScoreMultiplier();
+        } else {
+            return session.getCompletedWorkDuration() * scoreByMinute;
+        }
+    }
+
+    private double getMult(int streak) {
+        double mult = 1.0;
+        for (int i = 0; i < streak; i++) {
+            mult *= dayMultiplier;
+        }
+        return mult;
+    }
+
     @Override
     public Session createSession(SessionDto sessionDto) throws Exception {
-        Optional<User> u= userService.getById(sessionDto.getUserId());
-        if(u.isEmpty()){
+        Optional<User> u = userService.getById(sessionDto.getUserId());
+        if (u.isEmpty()) {
             throw new Exception("Invalid UserId for session");
         }
 
-        Tag t =tagService.findById(sessionDto.getTagId());
+        Tag t = tagService.findById(sessionDto.getTagId());
 
         Session session = new Session();
         session.setUser(u.get());
@@ -51,7 +99,10 @@ public class SessionServiceImpl implements SessionService {
         session.setWorkDuration(sessionDto.getWorkDuration());
         session.setWaitDuration(sessionDto.getWaitDuration());
         session.setCompleted(false);
-        //TODO: set score and scoreMultiplier
+
+        session.setCompletedWorkDuration(0);
+        session.setScoreMultiplier(getMult(getCurrentDayStreak(session)));
+        session.setScore(0);
 
         return sessionRepository.save(session);
     }
@@ -59,7 +110,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public List<Session> getSessionsByUserId(int userId) throws Exception {
         Optional<User> existingUser = userRepository.findById(userId);
-        if(!existingUser.isPresent()){
+        if (!existingUser.isPresent()) {
             throw new Exception("User with given id doesn't exist");
         }
         return sessionRepository.findByUserId(userId);
@@ -75,27 +126,41 @@ public class SessionServiceImpl implements SessionService {
         }
 
         Session session = s.get();
-        if(session.isCompleted()){ throw new Exception("Session already completed"); }
-        session.setCompleted(true);
-        session.setCompletedWorkDuration(sessionInfo.getCompletedMinutes());
+        if (session.isCompleted()) {
+            throw new Exception("Session already completed");
+        }
 
-        //TODO: handle score and score multiplier logic
+        // Check if session creds valid
+        if(sessionInfo.getCompletedMinutes() < session.getWorkDuration() - toleranceInMinute){ // Not completed, worked too little
+            session.setCompleted(false);
+            session.setCompletedWorkDuration(sessionInfo.getCompletedMinutes());
+            session.setScore(getSessionScore(session));
+        }
+        else if(sessionInfo.getCompletedMinutes() > session.getWorkDuration() + toleranceInMinute){ // When this case happens user has left the session open and target time exceeded meaning creds are not valid
+            session.setCompleted(false);
+            session.setCompletedWorkDuration(0);
+            session.setScore(getSessionScore(session));
+        }
+        else{
+            session.setCompleted(true);
+            session.setCompletedWorkDuration(sessionInfo.getCompletedMinutes());
+            session.setScore(getSessionScore(session));
+        }
         sessionRepository.save(session);
 
-
         //Handle goal progresses both for parent and children
-        Tag t =session.getTag();
-        List<Tag> subTags= tagService.getSubTags(t);
+        Tag t = session.getTag();
+        List<Tag> subTags = tagService.getSubTags(t);
 
         subTags.forEach(tag -> {
 
             //increment children tag's total work duration
-            tagService.incrementTotalWorkDuration(sessionInfo.getCompletedMinutes(),tag.getId());
+            tagService.incrementTotalWorkDuration(sessionInfo.getCompletedMinutes(), tag.getId());
 
 
-            List<Goal> userGoals= goalService.getActiveGoalByUserIdAndTagId(session.getUser().getId(), tag.getId());
+            List<Goal> userGoals = goalService.getActiveGoalByUserIdAndTagId(session.getUser().getId(), tag.getId());
             userGoals.forEach(goal -> {
-                goal.setCompletedWorkDuration(sessionInfo.getCompletedMinutes()+  goal.getCompletedWorkDuration());
+                goal.setCompletedWorkDuration(sessionInfo.getCompletedMinutes() + goal.getCompletedWorkDuration());
 
                 goalService.saveGoal(goal);
             });
@@ -105,7 +170,7 @@ public class SessionServiceImpl implements SessionService {
 
         //handle user analytics
         UserAnalytics userAnalytics = session.getUser().getUserAnalytics();
-        userAnalyticsService.updateTotalWorkDuration(sessionInfo.getCompletedMinutes(),userAnalytics.getId());
+        userAnalyticsService.updateTotalWorkDuration(sessionInfo.getCompletedMinutes(), userAnalytics.getId());
         //TODO: increment strike if today's first completed session
 
     }

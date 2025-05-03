@@ -126,7 +126,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag findById(int id) {
-        return tagRepository.findById(id).orElse(null);
+        return tagRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tag not found with id: " + id));
     }
 
     @Override

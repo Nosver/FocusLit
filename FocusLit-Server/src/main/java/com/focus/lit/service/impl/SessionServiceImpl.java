@@ -1,17 +1,16 @@
 package com.focus.lit.service.impl;
 
 import com.focus.lit.dto.EndSessionDto;
+import com.focus.lit.dto.SessionDto;
 import com.focus.lit.model.*;
 import com.focus.lit.repository.SessionRepository;
 import com.focus.lit.repository.UserRepository;
-import com.focus.lit.service.GoalService;
-import com.focus.lit.service.SessionService;
-import com.focus.lit.service.TagService;
-import com.focus.lit.service.UserAnalyticsService;
+import com.focus.lit.service.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,8 +32,27 @@ public class SessionServiceImpl implements SessionService {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private UserService userService;
+
     @Override
-    public Session createSession(Session session) {
+    public Session createSession(SessionDto sessionDto) throws Exception {
+        Optional<User> u= userService.getById(sessionDto.getUserId());
+        if(u.isEmpty()){
+            throw new Exception("Invalid UserId for session");
+        }
+
+        Tag t =tagService.findById(sessionDto.getTagId());
+
+        Session session = new Session();
+        session.setUser(u.get());
+        session.setTag(t);
+        session.setStartTime(LocalDateTime.now());
+        session.setWorkDuration(sessionDto.getWorkDuration());
+        session.setWaitDuration(sessionDto.getWaitDuration());
+        session.setCompleted(false);
+        //TODO: set score and scoreMultiplier
+
         return sessionRepository.save(session);
     }
 

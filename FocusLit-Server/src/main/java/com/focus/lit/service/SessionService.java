@@ -1,12 +1,13 @@
 package com.focus.lit.service;
 
 import com.focus.lit.dto.EndSessionDto;
+import com.focus.lit.dto.SessionDto;
 import com.focus.lit.model.Session;
 
 import java.util.List;
 
 public interface SessionService {
-    Session createSession(Session session);
+    Session createSession(SessionDto session) throws Exception;
 
     List<Session> getSessionsByUserId(int userId) throws Exception;
 

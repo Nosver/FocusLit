@@ -5,6 +5,7 @@ import com.focus.lit.dto.UpdateUserInfoDto;
 import com.focus.lit.dto.UserDto;
 import com.focus.lit.mapper.UserMapper;
 import com.focus.lit.model.User;
+import com.focus.lit.service.TelegramService;
 import com.focus.lit.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,8 @@ public class UserController {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private TelegramService telegramService;
 
     @GetMapping("/get")
     public ResponseEntity<UserDto> get(@RequestParam Integer id) {
@@ -58,6 +61,11 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error occurred while changing password. " + e.getMessage());
         }
+    }
+
+    @GetMapping("/getTelegramInviteLink")
+    public ResponseEntity<?> getTelegramInviteLink(@RequestParam Integer userId) {
+        return ResponseEntity.ok(telegramService.generateInviteLink(userId));
     }
 
 }

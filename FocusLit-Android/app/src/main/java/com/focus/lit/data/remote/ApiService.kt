@@ -2,6 +2,7 @@ package com.focus.lit.data.remote
 
 import com.focus.lit.data.model.AddTagRequest
 import com.focus.lit.data.model.ChangePasswordRequest
+import com.focus.lit.data.model.CreateSessionRequest
 import com.focus.lit.data.model.LoginRequest
 import com.focus.lit.data.model.LoginResponse
 import com.focus.lit.data.model.RegisterRequest
@@ -34,5 +35,8 @@ interface ApiService {
 
     @POST("user/changePassword")
     suspend fun changePassword(@Body request: ChangePasswordRequest)
+
+    @POST("session/create")
+    suspend fun createSession(@Body request: CreateSessionRequest)
 
 }

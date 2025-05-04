@@ -2,6 +2,7 @@ package com.focus.lit.controller;
 
 
 import com.focus.lit.dto.UserAnalyticsDto;
+import com.focus.lit.dto.WeeklyWorkDto;
 import com.focus.lit.mapper.UserAnalyticsMapper;
 import com.focus.lit.model.UserAnalytics;
 import com.focus.lit.service.UserAnalyticsService;
@@ -53,5 +54,10 @@ public class UserAnalyticsController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/getWeeklyWork")
+    public ResponseEntity<WeeklyWorkDto> getWeeklyWork(@RequestParam int userId) {
+        return new ResponseEntity<>(userAnalyticsService.getWeeklyWork(userId), HttpStatus.OK);
     }
 }

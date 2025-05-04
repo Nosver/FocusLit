@@ -1,16 +1,26 @@
 package com.focus.lit.service.impl;
 
+import com.focus.lit.dto.SessionDto;
 import com.focus.lit.dto.UserAnalyticsDto;
+import com.focus.lit.dto.WeeklyWorkDto;
+import com.focus.lit.mapper.SessionMapper;
 import com.focus.lit.mapper.UserAnalyticsMapper;
 import com.focus.lit.model.Achievement;
+import com.focus.lit.model.Session;
 import com.focus.lit.model.UserAnalytics;
 import com.focus.lit.repository.UserAnalyticsRepository;
+import com.focus.lit.service.SessionService;
 import com.focus.lit.service.UserAnalyticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserAnalyticsServiceImpl implements UserAnalyticsService {
@@ -20,6 +30,10 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
 
     @Autowired
     UserAnalyticsMapper userAnalyticsMapper;
+    @Autowired
+    private SessionService sessionService;
+    @Autowired
+    private SessionMapper sessionMapper;
 
     @Override
     public UserAnalytics createUserAnalytics() {
@@ -59,5 +73,25 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
     @Override
     public void updateTotalWorkDuration(int gainedWorkDuration, int userAnalyticsId) {
         userAnalyticsRepository.updateTotalWorkDuration(gainedWorkDuration, userAnalyticsId);
+    }
+
+    @Override
+    public WeeklyWorkDto getWeeklyWork(int userId) {
+        // FIXME: In Progress
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime weekStartDate = currentDate.with(DayOfWeek.MONDAY); // FIXME: Not working properly
+        LocalDateTime weekEndDate = currentDate.with(DayOfWeek.SUNDAY); // FIXME: Not working properly
+
+        WeeklyWorkDto weeklyWorkDto = new WeeklyWorkDto();
+        weeklyWorkDto.setStartDate(Timestamp.valueOf(weekStartDate));
+        weeklyWorkDto.setEndDate(Timestamp.valueOf(weekEndDate));
+
+        List<Session> sessions = sessionService.getSessionsByUserIdBetweenDates(userId, weekEndDate, weekStartDate);
+        List<SessionDto> sessionDtos = new ArrayList<>();
+        for (Session session : sessions) {
+            sessionDtos.add(sessionMapper.sessionToSessionDto(session));
+        }
+        weeklyWorkDto.setSessions(sessionDtos);
+        return weeklyWorkDto;
     }
 }

@@ -108,7 +108,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public List<Session> getSessionsByUserId(int userId) throws Exception {
+    public List<Session> getSessionsByUserIdBetweenDates(int userId) throws Exception {
         Optional<User> existingUser = userRepository.findById(userId);
         if (!existingUser.isPresent()) {
             throw new Exception("User with given id doesn't exist");
@@ -173,5 +173,10 @@ public class SessionServiceImpl implements SessionService {
         userAnalyticsService.updateTotalWorkDuration(sessionInfo.getCompletedMinutes(), userAnalytics.getId());
         //TODO: increment strike if today's first completed session
 
+    }
+
+    @Override
+    public List<Session> getSessionsByUserIdBetweenDates(int userId, LocalDateTime endDate, LocalDateTime startDate) {
+        return sessionRepository.findByStartTimeBetween(endDate, startDate);
     }
 }

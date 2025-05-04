@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.focus.lit.data.local.TokenManager
 import com.focus.lit.data.model.CreateSessionRequest
 import com.focus.lit.data.model.Tag
+import com.focus.lit.data.model.UserAnalyticsResponse
 import com.focus.lit.data.remote.ApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.HttpException
+import retrofit2.http.Query
 import javax.inject.Inject
 
 @HiltViewModel
@@ -112,6 +114,9 @@ class SessionViewModel @Inject constructor(
         }
 
     }
+
+
+
 
 
 }

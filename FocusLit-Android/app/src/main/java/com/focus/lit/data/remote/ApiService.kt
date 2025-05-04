@@ -7,8 +7,10 @@ import com.focus.lit.data.model.LoginRequest
 import com.focus.lit.data.model.LoginResponse
 import com.focus.lit.data.model.RegisterRequest
 import com.focus.lit.data.model.Tag
+import com.focus.lit.data.model.UserAnalyticsResponse
 import com.focus.lit.data.model.UserInfo
 import com.focus.lit.data.model.UserProfileChangeBody
+import com.focus.lit.ui.viewmodel.HomePageViewModel
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -38,5 +40,8 @@ interface ApiService {
 
     @POST("session/create")
     suspend fun createSession(@Body request: CreateSessionRequest)
+
+    @GET("userAnalytics/get")
+    suspend fun getUserAnalytics(@Query("id") userId: Int?): UserAnalyticsResponse
 
 }

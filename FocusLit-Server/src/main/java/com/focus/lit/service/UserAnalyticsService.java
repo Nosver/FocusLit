@@ -1,5 +1,6 @@
 package com.focus.lit.service;
 
+import com.focus.lit.dto.AddAchievementDto;
 import com.focus.lit.dto.UserAnalyticsDto;
 import com.focus.lit.model.Achievement;
 import com.focus.lit.model.UserAnalytics;
@@ -13,4 +14,6 @@ public interface UserAnalyticsService {
     List<Achievement> getUserAchievements(int id) throws Exception;
     UserAnalyticsDto update(UserAnalyticsDto userAnalyticsDto);
     void updateTotalWorkDuration(int gainedWorkDuration, int userAnalyticsId);
+    void addAchievement(AddAchievementDto dto) throws Exception;
+
 }

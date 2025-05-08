@@ -2,6 +2,7 @@ package com.focus.lit.controller;
 
 import com.focus.lit.dto.EndSessionDto;
 import com.focus.lit.dto.SessionDto;
+import com.focus.lit.dto.SessionUpdateDto;
 import com.focus.lit.mapper.SessionMapper;
 import com.focus.lit.mapper.TagMapper;
 import com.focus.lit.model.Session;
@@ -53,6 +54,18 @@ public class SessionController {
         sessionService.endSession(endSessionDto);
         return ResponseEntity.ok("Session ended successfully");
     }
-
-
+    @PostMapping("/update")
+    public ResponseEntity<?> updateSession(@RequestBody SessionUpdateDto dto) {
+        try {
+            sessionService.updateSession(dto);
+            return new ResponseEntity<>("Session updated successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Update failed: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
+
+
+
+
+}

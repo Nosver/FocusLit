@@ -2,6 +2,7 @@ package com.focus.lit.service.impl;
 
 import com.focus.lit.dto.EndSessionDto;
 import com.focus.lit.dto.SessionDto;
+import com.focus.lit.dto.SessionUpdateDto;
 import com.focus.lit.model.*;
 import com.focus.lit.repository.SessionRepository;
 import com.focus.lit.repository.UserRepository;
@@ -64,6 +65,7 @@ public class SessionServiceImpl implements SessionService {
         return streak;
     }
 
+
     private double getSessionScore(Session session) { // FIXME: THis is not recognizing the completed instead taking all
         if (session == null) {
             throw new IllegalArgumentException("Cannot find session");
@@ -115,6 +117,19 @@ public class SessionServiceImpl implements SessionService {
         }
         return sessionRepository.findByUserId(userId);
     }
+    @Override
+    public void updateSession(SessionUpdateDto dto) throws Exception {
+        Session session = sessionRepository.findById(dto.getSessionId())
+                .orElseThrow(() -> new Exception("Session not found"));
+
+        session.setEndTime(dto.getEndTime());
+        session.setCompletedWorkDuration(dto.getCompletedWorkDuration());
+        session.setScore(dto.getScore());
+        session.setCompleted(dto.isCompleted());
+
+        sessionRepository.save(session);
+    }
+
 
     @Override
     @Transactional
@@ -146,6 +161,7 @@ public class SessionServiceImpl implements SessionService {
             session.setCompletedWorkDuration(sessionInfo.getCompletedMinutes());
             session.setScore(getSessionScore(session));
         }
+        session.setEndTime(LocalDateTime.now());
         sessionRepository.save(session);
 
         //Handle goal progresses both for parent and children

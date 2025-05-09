@@ -2,13 +2,16 @@ package com.focus.lit.data.remote
 
 import com.focus.lit.data.model.AddTagRequest
 import com.focus.lit.data.model.ChangePasswordRequest
+import com.focus.lit.data.model.CreateSessionRequest
 import com.focus.lit.data.model.LoginRequest
 import com.focus.lit.data.model.LoginResponse
 import com.focus.lit.data.model.RegisterRequest
 import com.focus.lit.data.model.Tag
 import com.focus.lit.data.model.UserAnalytics
+import com.focus.lit.data.model.UserAnalyticsResponse
 import com.focus.lit.data.model.UserInfo
 import com.focus.lit.data.model.UserProfileChangeBody
+import com.focus.lit.ui.viewmodel.HomePageViewModel
 import com.focus.lit.data.model.WeeklyWorkResponse
 import com.focus.lit.ui.viewmodel.HomePageViewModel
 import retrofit2.http.Body
@@ -43,5 +46,9 @@ interface ApiService {
 
     @GET("userAnalytics/get")
     suspend fun getUserAnalytics(@Query("userId") userId: Int): UserAnalytics
+
+    @POST("session/create")
+    suspend fun createSession(@Body request: CreateSessionRequest)
+
 
 }

@@ -44,4 +44,8 @@ public class Session {
     @Column(name="completed_work_duration")
     private int completedWorkDuration;
 
+    @Setter
+    @Getter
+    private LocalDateTime endTime;
+
 }

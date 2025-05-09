@@ -2,6 +2,7 @@ package com.focus.lit.service;
 
 import com.focus.lit.dto.EndSessionDto;
 import com.focus.lit.dto.SessionDto;
+import com.focus.lit.dto.SessionUpdateDto;
 import com.focus.lit.model.Session;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,9 @@ public interface SessionService {
     List<Session> getSessionsByUserIdBetweenDates(int userId) throws Exception;
 
     void endSession(EndSessionDto sessionInfo) throws Exception;
+
+    void updateSession(SessionUpdateDto dto) throws Exception;
+
 
     List<Session> getSessionsByUserIdBetweenDates(int userId, LocalDateTime endDate, LocalDateTime startDate);
 }

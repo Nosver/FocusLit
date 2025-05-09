@@ -1,6 +1,7 @@
 package com.focus.lit.service.impl;
 
 import com.focus.lit.dto.SessionDto;
+import com.focus.lit.dto.AddAchievementDto;
 import com.focus.lit.dto.UserAnalyticsDto;
 import com.focus.lit.dto.WeeklyWorkDto;
 import com.focus.lit.mapper.SessionMapper;
@@ -8,6 +9,7 @@ import com.focus.lit.mapper.UserAnalyticsMapper;
 import com.focus.lit.model.Achievement;
 import com.focus.lit.model.Session;
 import com.focus.lit.model.UserAnalytics;
+import com.focus.lit.repository.AchievementRepository;
 import com.focus.lit.repository.UserAnalyticsRepository;
 import com.focus.lit.service.SessionService;
 import com.focus.lit.service.UserAnalyticsService;
@@ -64,6 +66,25 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
         Optional<UserAnalytics> userAnalytics = userAnalyticsRepository.findById(userAnalyticsId);
         if(userAnalytics.isEmpty()) throw new Exception("User Analytics with given id not found");
         return userAnalytics.get().getUserAchievements();
+    }
+    @Autowired
+    private AchievementRepository achievementRepository;
+
+    @Override
+    public void addAchievement(AddAchievementDto dto) throws Exception {
+        UserAnalytics userAnalytics = userAnalyticsRepository.findById(dto.getUserAnalyticsId())
+                .orElseThrow(() -> new Exception("UserAnalytics not found"));
+
+        Achievement achievement = achievementRepository.findById(dto.getAchievementId())
+                .orElseThrow(() -> new Exception("Achievement not found"));
+
+        List<Achievement> currentAchievements = userAnalytics.getUserAchievements();
+        if (!currentAchievements.contains(achievement)) {
+            currentAchievements.add(achievement);
+        }
+
+        userAnalytics.setUserAchievements(currentAchievements);
+        userAnalyticsRepository.save(userAnalytics);
     }
 
     @Override

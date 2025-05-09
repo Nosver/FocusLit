@@ -1,6 +1,7 @@
 package com.focus.lit.controller;
 
 
+import com.focus.lit.dto.AddAchievementDto;
 import com.focus.lit.dto.UserAnalyticsDto;
 import com.focus.lit.dto.WeeklyWorkDto;
 import com.focus.lit.mapper.UserAnalyticsMapper;
@@ -48,6 +49,16 @@ public class UserAnalyticsController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("/addAchievement")
+    public ResponseEntity<?> addAchievement(@RequestBody AddAchievementDto dto) {
+        try {
+            userAnalyticsService.addAchievement(dto);
+            return ResponseEntity.ok("Achievement added successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
     @PostMapping("/update")
     public ResponseEntity<UserAnalyticsDto> update(@RequestBody UserAnalyticsDto userAnalyticsDto) {

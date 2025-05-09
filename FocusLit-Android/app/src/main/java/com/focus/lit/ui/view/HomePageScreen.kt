@@ -9,7 +9,9 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -22,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.focus.lit.R
 import com.focus.lit.ui.viewmodel.HomePageViewModel
+import com.focus.lit.ui.viewmodel.ProfileViewModel
 
 @Composable
 fun HomePage(
@@ -41,7 +44,7 @@ fun HomePage(
     ) {
         // Title with gradient
         Text(
-            text = "Welcome Jane Doe",
+            text = "Welcome YOU",
             style = MaterialTheme.typography.headlineLarge.copy(
                 fontSize = 32.sp,
                 brush = Brush.horizontalGradient(
@@ -55,8 +58,8 @@ fun HomePage(
         SectionContainer(backgroundColor = Color(0xFFE3F2FD)) {
             AnalyticsSection(
                 streak = streak,
-                totalWorkDuration = totalWorkDuration,
-                score = score,
+                totalWorkDuration = totalWorkDuration.toInt(), // Convert to Int
+                score = score.toInt(), // Convert to Int
                 userRank = userRank
             )
         }
@@ -107,22 +110,22 @@ fun AnalyticsSection(
 ) {
     Column {
         AnalyticsRow(
-            iconRes = R.drawable.ic_streak,
+            iconRes = R.drawable.ic_streak2,
             label = "Streak: $streak"
         )
         Spacer(modifier = Modifier.height(8.dp))
         AnalyticsRow(
-            iconRes = R.drawable.ic_timer,
+            iconRes = R.drawable.ic_timer2,
             label = "Total Work Duration: $totalWorkDuration minutes"
         )
         Spacer(modifier = Modifier.height(8.dp))
         AnalyticsRow(
-            iconRes = R.drawable.ic_timer,
+            iconRes = R.drawable.ic_score2,
             label = "Score: $score"
         )
         Spacer(modifier = Modifier.height(8.dp))
         AnalyticsRow(
-            iconRes = R.drawable.ic_timer,
+            iconRes = R.drawable.ic_rank,
             label = "User Rank: $userRank"
         )
     }

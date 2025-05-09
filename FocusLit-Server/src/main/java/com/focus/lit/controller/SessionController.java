@@ -2,6 +2,7 @@ package com.focus.lit.controller;
 
 import com.focus.lit.dto.EndSessionDto;
 import com.focus.lit.dto.SessionDto;
+import com.focus.lit.dto.SessionUpdateDto;
 import com.focus.lit.mapper.SessionMapper;
 import com.focus.lit.model.Session;
 import com.focus.lit.service.SessionService;
@@ -25,8 +26,9 @@ public class SessionController {
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody SessionDto sessionDto) {
         try {
-            sessionService.createSession(sessionDto);
-            return new ResponseEntity<>("Session successfully created", HttpStatus.CREATED);
+            Session s= sessionService.createSession(sessionDto);
+            //TODO: use mapper
+            return new ResponseEntity<>(s, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -49,6 +51,18 @@ public class SessionController {
         sessionService.endSession(endSessionDto);
         return ResponseEntity.ok("Session ended successfully");
     }
-
-
+    @PostMapping("/update")
+    public ResponseEntity<?> updateSession(@RequestBody SessionUpdateDto dto) {
+        try {
+            sessionService.updateSession(dto);
+            return new ResponseEntity<>("Session updated successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Update failed: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
+
+
+
+
+}

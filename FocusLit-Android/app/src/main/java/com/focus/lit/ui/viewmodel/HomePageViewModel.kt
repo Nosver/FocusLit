@@ -5,20 +5,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.State
+import com.focus.lit.data.local.TokenManager
+import com.focus.lit.data.remote.ApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import retrofit2.http.Query
 import javax.inject.Inject
 
 @HiltViewModel
-class HomePageViewModel @Inject constructor() : ViewModel() {
+class HomePageViewModel @Inject constructor(
+    private val tokenManager: TokenManager,
+    private val apiService: ApiService
+) : ViewModel() {
 
     private val _streak = mutableStateOf(0)
     val streak: State<Int> = _streak
 
-    private val _totalWorkDuration = mutableStateOf(0)
-    val totalWorkDuration: State<Int> = _totalWorkDuration
+    private val _totalWorkDuration = mutableStateOf(0.0)
+    val totalWorkDuration: State<Double> = _totalWorkDuration
 
-    private val _score = mutableStateOf(0)
-    val score: State<Int> = _score
+    private val _score = mutableStateOf(0.0)
+    val score: State<Double> = _score
 
     private val _userRank = mutableStateOf(0)
     val userRank: State<Int> = _userRank
@@ -26,20 +32,23 @@ class HomePageViewModel @Inject constructor() : ViewModel() {
     private val _achievements = mutableStateOf(listOf<String>())
     val achievements: State<List<String>> = _achievements
 
-    init {
+    init{
         fetchUserAnalytics()
     }
 
     private fun fetchUserAnalytics() {
         viewModelScope.launch {
-            //
-            // TODO: Handle API call
-            //
-            _streak.value = 10
-            _totalWorkDuration.value = 500
-            _score.value = 1500
-            _userRank.value = 5
-            _achievements.value = listOf("Achievement 1", "Achievement 2")
+            try {
+                val userId = tokenManager.getId()
+                val response = apiService.getUserAnalytics(userId)
+                _streak.value = response.streak
+                _totalWorkDuration.value = response.totalWorkDuration
+                _score.value = response.score
+                _userRank.value = response.userRank
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
+
 }

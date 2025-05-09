@@ -13,12 +13,33 @@ import java.util.List;
 public class GoalServiceImpl implements GoalService {
     @Autowired
     private GoalRepository goalRepository;
-
     @Override
     public Goal createGoal(Goal goal) {
-        //TODO: implement this (Güney)
-        return null;
+        if (goal == null) {
+            throw new IllegalArgumentException("Goal object must be field.");
+        }
+
+        if (goal.getTag() == null) {
+            throw new IllegalArgumentException("Goal's Tag field cannot be null.");
+        }
+
+        if (goal.getStartTime() == null ) {
+            throw new IllegalArgumentException("Start time cannot be null.");
+        }
+
+        if (goal.getTargetWorkDuration() <= 0) {
+            throw new IllegalArgumentException("Target uptime must be greater than 0.");
+        }
+
+       /* if (goal.getEndTime().isBefore(goal.getStartTime())) {
+            throw new IllegalArgumentException("The end time cannot be before the start time.");
+        }
+
+        */
+
+        return goalRepository.save(goal);
     }
+
 
     @Override
     public void deleteGoal(GoalDto goal) {

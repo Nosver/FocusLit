@@ -6,8 +6,11 @@ import com.focus.lit.data.model.LoginRequest
 import com.focus.lit.data.model.LoginResponse
 import com.focus.lit.data.model.RegisterRequest
 import com.focus.lit.data.model.Tag
+import com.focus.lit.data.model.UserAnalytics
 import com.focus.lit.data.model.UserInfo
 import com.focus.lit.data.model.UserProfileChangeBody
+import com.focus.lit.data.model.WeeklyWorkResponse
+import com.focus.lit.ui.viewmodel.HomePageViewModel
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -34,5 +37,11 @@ interface ApiService {
 
     @POST("user/changePassword")
     suspend fun changePassword(@Body request: ChangePasswordRequest)
+
+    @GET("userAnalytics/getWeeklyWork")
+    suspend fun getWeeklyWork(@Query("userId") userId: Int): WeeklyWorkResponse
+
+    @GET("userAnalytics/get")
+    suspend fun getUserAnalytics(@Query("userId") userId: Int): UserAnalytics
 
 }

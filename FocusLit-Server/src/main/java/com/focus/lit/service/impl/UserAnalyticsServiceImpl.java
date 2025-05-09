@@ -16,9 +16,13 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -77,21 +81,27 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
 
     @Override
     public WeeklyWorkDto getWeeklyWork(int userId) {
-        // FIXME: In Progress
-        LocalDateTime currentDate = LocalDateTime.now();
-        LocalDateTime weekStartDate = currentDate.with(DayOfWeek.MONDAY); // FIXME: Not working properly
-        LocalDateTime weekEndDate = currentDate.with(DayOfWeek.SUNDAY); // FIXME: Not working properly
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate currentDate = now.toLocalDate();
 
-        WeeklyWorkDto weeklyWorkDto = new WeeklyWorkDto();
-        weeklyWorkDto.setStartDate(Timestamp.valueOf(weekStartDate));
-        weeklyWorkDto.setEndDate(Timestamp.valueOf(weekEndDate));
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        DayOfWeek firstDayOfWeek = weekFields.getFirstDayOfWeek();
 
-        List<Session> sessions = sessionService.getSessionsByUserIdBetweenDates(userId, weekEndDate, weekStartDate);
+        LocalDate startOfWeek = currentDate.with(TemporalAdjusters.previousOrSame(firstDayOfWeek));
+        LocalDate endOfWeek = startOfWeek.plusWeeks(1);
+
+        LocalDateTime startDateTime = startOfWeek.atStartOfDay().plusDays(1);
+        LocalDateTime endDateTime = endOfWeek.atStartOfDay().plusDays(1);
+
+        List<Session> sessions = sessionService.getSessionsByUserIdBetweenDates(userId, startDateTime, endDateTime);
         List<SessionDto> sessionDtos = new ArrayList<>();
         for (Session session : sessions) {
             sessionDtos.add(sessionMapper.sessionToSessionDto(session));
         }
+        WeeklyWorkDto weeklyWorkDto = new WeeklyWorkDto();
         weeklyWorkDto.setSessions(sessionDtos);
+        weeklyWorkDto.setStartDate(startDateTime);
+        weeklyWorkDto.setEndDate(endDateTime);
         return weeklyWorkDto;
     }
 }

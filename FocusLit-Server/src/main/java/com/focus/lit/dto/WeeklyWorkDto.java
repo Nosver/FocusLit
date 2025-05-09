@@ -3,6 +3,7 @@ package com.focus.lit.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,6 @@ import java.util.List;
 @Setter
 public class WeeklyWorkDto {
     List<SessionDto> sessions;
-    Date startDate;
-    Date endDate;
+    LocalDateTime startDate;
+    LocalDateTime endDate;
 }

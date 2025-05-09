@@ -11,7 +11,6 @@ import com.focus.lit.data.model.UserAnalytics
 import com.focus.lit.data.model.UserAnalyticsResponse
 import com.focus.lit.data.model.UserInfo
 import com.focus.lit.data.model.UserProfileChangeBody
-import com.focus.lit.ui.viewmodel.HomePageViewModel
 import com.focus.lit.data.model.WeeklyWorkResponse
 import com.focus.lit.ui.viewmodel.HomePageViewModel
 import retrofit2.http.Body

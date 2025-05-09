@@ -2,6 +2,7 @@ package com.focus.lit.ui.view
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -26,6 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.focus.lit.ui.viewmodel.LoginViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
     val email by viewModel.email.collectAsState()
@@ -68,9 +70,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 value = email,
                 onValueChange = viewModel::onEmailChanged,
                 label = { Text("Email") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(0.5f)
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White.copy(alpha = 0.5f) // 50% opaque background
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
@@ -78,9 +81,10 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 onValueChange = viewModel::onPasswordChanged,
                 label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(0.5f)
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.White.copy(alpha = 0.5f) // 50% opaque background
+                )
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row {

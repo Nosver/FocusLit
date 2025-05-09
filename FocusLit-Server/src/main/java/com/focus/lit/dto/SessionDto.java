@@ -16,6 +16,7 @@ public class SessionDto {
     private int waitDuration;
     private int score;
     private float scoreMultiplier;
+    private int completedWorkDuration;
 
     @JsonProperty("isCompleted")
     private boolean isCompleted;

@@ -1,7 +1,8 @@
 package com.focus.lit.ui.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -18,6 +19,7 @@ import com.focus.lit.ui.view.TimerScreen
 import com.focus.lit.ui.view.RegisterScreen
 import com.focus.lit.ui.view.GoalScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationGraph(navController: NavHostController) {
     NavHost(navController, startDestination = Screen.Login.route) {

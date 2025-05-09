@@ -3,8 +3,10 @@ package com.focus.lit.controller;
 
 import com.focus.lit.dto.AddAchievementDto;
 import com.focus.lit.dto.UserAnalyticsDto;
+import com.focus.lit.dto.WeeklyWorkDto;
 import com.focus.lit.mapper.UserAnalyticsMapper;
 import com.focus.lit.model.UserAnalytics;
+import com.focus.lit.repository.TokenRepository;
 import com.focus.lit.service.UserAnalyticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,10 +24,13 @@ public class UserAnalyticsController {
 
     @Autowired
     private UserAnalyticsMapper userAnalyticsMapper;
+    @Autowired
+    private TokenRepository tokenRepository;
 
     @GetMapping("/get")
-    public ResponseEntity<UserAnalyticsDto> get(int id) {
-        Optional<UserAnalytics> userAnalytics = userAnalyticsService.getUserAnalytics(id);
+    public ResponseEntity<UserAnalyticsDto> get(int userId) {
+
+        Optional<UserAnalytics> userAnalytics = userAnalyticsService.getUserAnalytics(userId);
         if(userAnalytics.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -64,5 +69,10 @@ public class UserAnalyticsController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/getWeeklyWork")
+    public ResponseEntity<WeeklyWorkDto> getWeeklyWork(@RequestParam int userId) {
+        return new ResponseEntity<>(userAnalyticsService.getWeeklyWork(userId), HttpStatus.OK);
     }
 }

@@ -77,4 +77,10 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @Override
+    public Optional<UserAnalytics> getUserAnalytics(Integer userId) {
+        return Optional.ofNullable(userRepository.findById(userId).get().getUserAnalytics());
+    }
+
+
 }

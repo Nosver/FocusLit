@@ -39,7 +39,7 @@ class HomePageViewModel @Inject constructor(
     private fun fetchUserAnalytics() {
         viewModelScope.launch {
             try {
-                val userId = tokenManager.getId()
+                val userId = tokenManager.getId() ?: return@launch
                 val response = apiService.getUserAnalytics(userId)
                 _streak.value = response.streak
                 _totalWorkDuration.value = response.totalWorkDuration

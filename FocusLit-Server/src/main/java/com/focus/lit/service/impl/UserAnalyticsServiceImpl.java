@@ -1,18 +1,33 @@
 package com.focus.lit.service.impl;
 
+import com.focus.lit.dto.SessionDto;
 import com.focus.lit.dto.AddAchievementDto;
 import com.focus.lit.dto.UserAnalyticsDto;
+import com.focus.lit.dto.WeeklyWorkDto;
+import com.focus.lit.mapper.SessionMapper;
 import com.focus.lit.mapper.UserAnalyticsMapper;
 import com.focus.lit.model.Achievement;
+import com.focus.lit.model.Session;
 import com.focus.lit.model.UserAnalytics;
 import com.focus.lit.repository.AchievementRepository;
 import com.focus.lit.repository.UserAnalyticsRepository;
+import com.focus.lit.service.SessionService;
 import com.focus.lit.service.UserAnalyticsService;
+import com.focus.lit.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserAnalyticsServiceImpl implements UserAnalyticsService {
@@ -22,6 +37,14 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
 
     @Autowired
     UserAnalyticsMapper userAnalyticsMapper;
+    @Autowired
+    private SessionService sessionService;
+    @Autowired
+    private SessionMapper sessionMapper;
+    @Autowired
+    private UserAnalyticsService userAnalyticsService;
+    @Autowired
+    private UserService userService;
 
     @Override
     public UserAnalytics createUserAnalytics() {
@@ -34,8 +57,8 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
     }
 
     @Override
-    public Optional<UserAnalytics> getUserAnalytics(int id) {
-        return userAnalyticsRepository.findById(id);
+    public Optional<UserAnalytics> getUserAnalytics(int userId) {
+        return getUserAnalyticsByUserId(userId);
     }
 
     @Override
@@ -80,5 +103,36 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
     @Override
     public void updateTotalWorkDuration(int gainedWorkDuration, int userAnalyticsId) {
         userAnalyticsRepository.updateTotalWorkDuration(gainedWorkDuration, userAnalyticsId);
+    }
+
+    @Override
+    public WeeklyWorkDto getWeeklyWork(int userId) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate currentDate = now.toLocalDate();
+
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        DayOfWeek firstDayOfWeek = weekFields.getFirstDayOfWeek();
+
+        LocalDate startOfWeek = currentDate.with(TemporalAdjusters.previousOrSame(firstDayOfWeek));
+        LocalDate endOfWeek = startOfWeek.plusWeeks(1);
+
+        LocalDateTime startDateTime = startOfWeek.atStartOfDay().plusDays(1);
+        LocalDateTime endDateTime = endOfWeek.atStartOfDay().plusDays(1);
+
+        List<Session> sessions = sessionService.getSessionsByUserIdBetweenDates(userId, startDateTime, endDateTime);
+        List<SessionDto> sessionDtos = new ArrayList<>();
+        for (Session session : sessions) {
+            sessionDtos.add(sessionMapper.sessionToSessionDto(session));
+        }
+        WeeklyWorkDto weeklyWorkDto = new WeeklyWorkDto();
+        weeklyWorkDto.setSessions(sessionDtos);
+        weeklyWorkDto.setStartDate(startDateTime);
+        weeklyWorkDto.setEndDate(endDateTime);
+        return weeklyWorkDto;
+    }
+
+    @Override
+    public Optional<UserAnalytics> getUserAnalyticsByUserId(int userId) {
+        return userService.getUserAnalytics(userId);
     }
 }

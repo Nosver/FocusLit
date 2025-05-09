@@ -161,6 +161,7 @@ public class SessionServiceImpl implements SessionService {
             session.setCompletedWorkDuration(sessionInfo.getCompletedMinutes());
             session.setScore(getSessionScore(session));
         }
+        session.setEndTime(LocalDateTime.now());
         sessionRepository.save(session);
 
         //Handle goal progresses both for parent and children

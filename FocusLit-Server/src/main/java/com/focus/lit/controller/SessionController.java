@@ -30,8 +30,9 @@ public class SessionController {
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody SessionDto sessionDto) {
         try {
-            sessionService.createSession(sessionDto);
-            return new ResponseEntity<>("Session successfully created", HttpStatus.CREATED);
+            Session s= sessionService.createSession(sessionDto);
+            //TODO: use mapper
+            return new ResponseEntity<>(s, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

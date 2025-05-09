@@ -11,10 +11,12 @@ import java.util.Optional;
 
 public interface UserAnalyticsService {
     UserAnalytics createUserAnalytics();
-    Optional<UserAnalytics> getUserAnalytics(int id);
+    Optional<UserAnalytics> getUserAnalytics(int userId);
     List<Achievement> getUserAchievements(int id) throws Exception;
     UserAnalyticsDto update(UserAnalyticsDto userAnalyticsDto);
     void updateTotalWorkDuration(int gainedWorkDuration, int userAnalyticsId);
 
     WeeklyWorkDto getWeeklyWork(int userId);
+
+    Optional<UserAnalytics> getUserAnalyticsByUserId(int userId);
 }

@@ -11,6 +11,7 @@ import com.focus.lit.model.UserAnalytics;
 import com.focus.lit.repository.UserAnalyticsRepository;
 import com.focus.lit.service.SessionService;
 import com.focus.lit.service.UserAnalyticsService;
+import com.focus.lit.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,10 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
     private SessionService sessionService;
     @Autowired
     private SessionMapper sessionMapper;
+    @Autowired
+    private UserAnalyticsService userAnalyticsService;
+    @Autowired
+    private UserService userService;
 
     @Override
     public UserAnalytics createUserAnalytics() {
@@ -50,8 +55,8 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
     }
 
     @Override
-    public Optional<UserAnalytics> getUserAnalytics(int id) {
-        return userAnalyticsRepository.findById(id);
+    public Optional<UserAnalytics> getUserAnalytics(int userId) {
+        return getUserAnalyticsByUserId(userId);
     }
 
     @Override
@@ -103,5 +108,10 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
         weeklyWorkDto.setStartDate(startDateTime);
         weeklyWorkDto.setEndDate(endDateTime);
         return weeklyWorkDto;
+    }
+
+    @Override
+    public Optional<UserAnalytics> getUserAnalyticsByUserId(int userId) {
+        return userService.getUserAnalytics(userId);
     }
 }

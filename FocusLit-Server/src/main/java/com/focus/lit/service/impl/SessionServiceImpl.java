@@ -193,6 +193,6 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public List<Session> getSessionsByUserIdBetweenDates(int userId, LocalDateTime endDate, LocalDateTime startDate) {
-        return sessionRepository.findByStartTimeBetween(endDate, startDate);
+        return sessionRepository.findByUserIdAndStartTimeBetween(userId, endDate, startDate);
     }
 }

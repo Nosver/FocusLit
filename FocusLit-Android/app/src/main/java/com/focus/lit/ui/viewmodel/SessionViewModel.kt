@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.focus.lit.data.local.TokenManager
 import com.focus.lit.data.model.CreateSessionRequest
 import com.focus.lit.data.model.Tag
-import com.focus.lit.data.model.UserAnalyticsResponse
 import com.focus.lit.data.remote.ApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

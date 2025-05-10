@@ -10,7 +10,6 @@ import com.focus.lit.data.model.LoginResponse
 import com.focus.lit.data.model.RegisterRequest
 import com.focus.lit.data.model.Tag
 import com.focus.lit.data.model.UserAnalytics
-import com.focus.lit.data.model.UserAnalyticsResponse
 import com.focus.lit.data.model.UserInfo
 import com.focus.lit.data.model.UserProfileChangeBody
 import com.focus.lit.data.model.WeeklyWorkResponse

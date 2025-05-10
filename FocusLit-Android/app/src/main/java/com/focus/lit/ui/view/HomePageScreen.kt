@@ -3,9 +3,13 @@ package com.focus.lit.ui.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -63,20 +68,20 @@ fun HomePage(
                 userRank = userRank
             )
         }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier.padding(vertical = 16.dp),
-            color = Color.Gray,
-            thickness = 1.dp
+            thickness = 1.dp,
+            color = Color.Gray
         )
 
         // Achievements Section
         SectionContainer(backgroundColor = Color(0xFFFFF3E0)) {
             AchievementsSection(achievements)
         }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier.padding(vertical = 16.dp),
-            color = Color.Gray,
-            thickness = 1.dp
+            thickness = 1.dp,
+            color = Color.Gray
         )
 
         // Weekly Calendar Section
@@ -180,53 +185,165 @@ fun AchievementsSection(achievements: List<String>) {
 
 @Composable
 fun GoogleStyleWeeklyCalendar() {
-    // Placeholder data for demonstration. Replace with real session data as needed.
     val days = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-    val sessions = listOf(2, 3, 0, 4, 1, 0, 5)
+    val timeSlots = listOf("9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00")
+    
+    // Mock session data with start hour and duration
+    val sessions = mapOf(
+        0 to listOf(Session(9, 60, "Mathematics"), Session(14, 45, "Physics")),
+        1 to listOf(Session(10, 30, "Chemistry"), Session(15, 60, "Biology")),
+        2 to listOf(Session(11, 45, "History")),
+        3 to listOf(Session(13, 60, "Literature"), Session(16, 30, "Mathematics")),
+        4 to listOf(Session(9, 45, "Physics"), Session(14, 60, "Chemistry")),
+        5 to listOf(),
+        6 to listOf(Session(10, 60, "Biology"), Session(15, 45, "History"))
+    )
+
+    val horizontalScrollState = rememberScrollState()
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = "Weekly Calendar",
+            text = "Weekly Study Schedule",
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 16.dp)
         )
-        // Calendar grid: one column per day
-        Row(
+
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .height(500.dp)
         ) {
-            days.forEachIndexed { index, day ->
-                Column(
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                // Time slots header
+                Row(
                     modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .padding(4.dp)
-                        .background(color = Color(0xFFF1F3F4), shape = RoundedCornerShape(4.dp))
-                        .border(1.dp, Color.LightGray, shape = RoundedCornerShape(4.dp))
-                        .padding(4.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .horizontalScroll(horizontalScrollState)
                 ) {
-                    Text(text = day, style = MaterialTheme.typography.bodyMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    val sessionCount = sessions[index]
-                    if (sessionCount > 0) {
-                        repeat(sessionCount) {
+                    // Fixed day label space
+                    Spacer(modifier = Modifier.width(60.dp))
+                    
+                    // Scrollable time slots
+                    Row(
+                        modifier = Modifier.width(80.dp * timeSlots.size)
+                    ) {
+                        timeSlots.forEach { time ->
                             Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(16.dp)
-                                    .background(
-                                        color = Color(0xFF4285F4),
-                                        shape = RoundedCornerShape(2.dp)
-                                    )
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
+                                modifier = Modifier.width(80.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = time,
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
                         }
-                    } else {
+                    }
+                }
+
+                // Calendar grid
+                days.forEachIndexed { dayIndex, day ->
+                    Row(
+                        modifier = Modifier
+                            .horizontalScroll(horizontalScrollState)
+                            .height(60.dp)
+                            .padding(vertical = 4.dp)
+                    ) {
+                        // Fixed day label
+                        Box(
+                            modifier = Modifier
+                                .width(60.dp)
+                                .fillMaxHeight(),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Text(
+                                text = day,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        // Scrollable time slots with sessions
+                        Box(
+                            modifier = Modifier.width(80.dp * timeSlots.size)
+                        ) {
+                            // Empty time slot backgrounds
+                            Row {
+                                repeat(timeSlots.size) {
+                                    Box(
+                                        modifier = Modifier
+                                            .width(80.dp)
+                                            .fillMaxHeight()
+                                            .padding(horizontal = 2.dp)
+                                            .background(
+                                                Color(0xFFF1F3F4),
+                                                RoundedCornerShape(4.dp)
+                                            )
+                                            .border(
+                                                1.dp,
+                                                Color.LightGray,
+                                                RoundedCornerShape(4.dp)
+                                            )
+                                    )
+                                }
+                            }
+
+                            // Sessions
+                            val daySessions = sessions[dayIndex] ?: emptyList()
+                            daySessions.forEach { session ->
+                                val startOffset = (session.hour - 9) * 80 // Each slot is 80dp wide
+                                val width = (session.duration / 60.0f) * 80 // Calculate width based on duration
+
+                                Box(
+                                    modifier = Modifier
+                                        .offset(x = startOffset.dp)
+                                        .width(width.dp)
+                                        .fillMaxHeight()
+                                        .padding(horizontal = 2.dp)
+                                        .background(
+                                            Color(0xFF4285F4).copy(alpha = 0.2f),
+                                            RoundedCornerShape(4.dp)
+                                        )
+                                        .border(
+                                            1.dp,
+                                            Color(0xFF4285F4),
+                                            RoundedCornerShape(4.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            text = session.tag,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = Color(0xFF4285F4),
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1
+                                        )
+                                        Text(
+                                            text = "${session.duration}min",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = Color(0xFF4285F4),
+                                            maxLines = 1
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
 }
+
+// Data class for session information
+private data class Session(
+    val hour: Int,
+    val duration: Int,
+    val tag: String
+)

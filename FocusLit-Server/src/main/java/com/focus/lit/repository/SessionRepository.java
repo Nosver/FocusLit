@@ -13,4 +13,6 @@ public interface SessionRepository extends JpaRepository<Session, Integer> {
     List<Session> findCompletedSessionsByUserId(int id);
 
     List<Session> findByStartTimeBetween(LocalDateTime startTimeAfter, LocalDateTime startTimeBefore);
+
+    List<Session> findByUserIdAndStartTimeBetween(int userId, LocalDateTime startTimeAfter, LocalDateTime startTimeBefore);
 }

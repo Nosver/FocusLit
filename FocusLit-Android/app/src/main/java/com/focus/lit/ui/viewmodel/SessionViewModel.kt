@@ -8,6 +8,7 @@ import com.focus.lit.data.model.Tag
 import com.focus.lit.data.model.UserAnalyticsResponse
 import com.focus.lit.data.remote.ApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -45,6 +46,8 @@ class SessionViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private val _sessionId = MutableStateFlow<Int>(-1)
+    val sessionId: StateFlow<Int> = _sessionId
 
     init{
         fetchTags()
@@ -89,14 +92,29 @@ class SessionViewModel @Inject constructor(
         _errorMessage.value = message
     }
 
+    fun sessionIdChange(value: Int) {
+        _sessionId.value = value
+    }
+
      fun createSession(onSuccess: () ->Unit, onError: (String) -> Unit ){
         viewModelScope.launch {
             try{
+                val studyDuration = studyMinutes.value.toInt()
+                val breakDuration = breakMinutes.value.toInt()
+                
+                if (studyDuration <= 0 || breakDuration <= 0) {
+                    onError("Study duration and break duration must be greater than 0")
+                    return@launch
+                }
+
                 val response = apiService.createSession(
                     CreateSessionRequest(tokenManager.getId() ?: -1,
-                        selectedTag.value.id,studyMinutes.value.toInt(),breakMinutes.value.toInt()
+                        selectedTag.value.id, studyDuration, breakDuration
                     )
                 )
+                _sessionId.value = response.id
+                // Wait for the state to be updated
+                delay(100)
                 onSuccess()
             }catch (e : HttpException){
                 val errorBody = e.response()?.errorBody()?.string()
@@ -110,9 +128,7 @@ class SessionViewModel @Inject constructor(
             }catch (e: Exception) {
                 onError(e.message ?: "Unknown error")
             }
-
         }
-
     }
 
 

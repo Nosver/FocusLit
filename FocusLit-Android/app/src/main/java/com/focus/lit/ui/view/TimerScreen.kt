@@ -49,6 +49,11 @@ fun TimerScreen(navController: NavController, backStackEntry: NavBackStackEntry)
     val studyMinutes = backStackEntry.arguments?.getInt("study") ?: 25
     val breakMinutes = backStackEntry.arguments?.getInt("break") ?: 5
     val selectedTopic = backStackEntry.arguments?.getString("topic") ?: "General"
+    val tagId = backStackEntry.arguments?.getString("id")
+    val sessionId = backStackEntry.arguments?.getString("sessionId")
+
+    Log.d("NavigationArgs", "tagId: $tagId, sessionId: $sessionId")
+
 
     var isStudyTime by remember { mutableStateOf(true) }
     var timeRemaining by remember { mutableStateOf(studyMinutes * 60) }
@@ -66,9 +71,11 @@ fun TimerScreen(navController: NavController, backStackEntry: NavBackStackEntry)
         AlertDialog(
             onDismissRequest = { showQuitDialog = false },
             title = { Text("Quit Session?") },
-            text = { Text("Are you sure you want to quit the session and return to Home? (you will lose all progress in this session)") },
+            text = { Text("Are you sure you want to quit the session and return to Home? (you will lose your progress in this session)") },
             confirmButton = {
                 Button(onClick = {
+
+                    //end session call
                     showQuitDialog = false
                     navController.navigate("homepage") {
                         popUpTo(0) { inclusive = true }
@@ -96,6 +103,9 @@ fun TimerScreen(navController: NavController, backStackEntry: NavBackStackEntry)
                     isStudyTime = true
                     totalDuration = studyMinutes * 60
                     timeRemaining = studyMinutes * 60
+
+                    //end session call
+                    //start session call
                 }) {
                     Text("Yes")
                 }

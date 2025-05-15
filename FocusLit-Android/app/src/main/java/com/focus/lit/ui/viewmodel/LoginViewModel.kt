@@ -1,6 +1,9 @@
 package com.focus.lit.ui.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.focus.lit.data.AppModule
@@ -28,6 +31,8 @@ class LoginViewModel @Inject constructor(
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password
 
+    var loading by mutableStateOf(false)
+
     private val _loginResult = MutableStateFlow<LoginResponse?>(null)
     val loginResult: StateFlow<LoginResponse?> = _loginResult
 
@@ -41,6 +46,7 @@ class LoginViewModel @Inject constructor(
 
     fun login(onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
+            loading = true;
             try {
                 val response = apiService.login(
                     LoginRequest(_email.value, _password.value)
@@ -66,6 +72,8 @@ class LoginViewModel @Inject constructor(
 
             } catch (e: Exception) {
                 onError(e.message ?: "Unknown error")
+            }finally {
+                loading = false
             }
         }
     }

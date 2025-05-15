@@ -40,10 +40,14 @@ class ProfileViewModel @Inject constructor(
         R.drawable.trophy,
         R.drawable.trophy
     )
+
+    var loading by mutableStateOf(false)
+
     private set
 
     public fun fetchUserInfo() {
         viewModelScope.launch {
+            loading = true
             try {
                 val userId = tokenManager.getId();
                 Log.d("ID", userId.toString())
@@ -54,6 +58,8 @@ class ProfileViewModel @Inject constructor(
                 changedUsername = userInfo.name
             } catch (e: Exception) {
                 e.printStackTrace()
+            }finally{
+                loading = false
             }
         }
     }
@@ -64,6 +70,7 @@ class ProfileViewModel @Inject constructor(
             return;
         };
         viewModelScope.launch {
+            loading = true
             try {
                 if (changedEmail == email && changedUsername == userName) {
                     changeComponentState = !changeComponentState
@@ -74,6 +81,8 @@ class ProfileViewModel @Inject constructor(
                 fetchUserInfo()
             }catch (e: Exception){
                 e.printStackTrace()
+            }finally {
+                loading = false
             }
             changeComponentState = !changeComponentState
         }

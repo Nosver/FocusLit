@@ -1,18 +1,27 @@
 package com.focus.lit.service.impl;
 
+import com.focus.lit.dto.ErrorMessageDto;
 import com.focus.lit.dto.GoalDto;
 import com.focus.lit.model.Goal;
 import com.focus.lit.repository.GoalRepository;
+import com.focus.lit.repository.UserRepository;
 import com.focus.lit.service.GoalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class GoalServiceImpl implements GoalService {
+
     @Autowired
     private GoalRepository goalRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public Goal createGoal(Goal goal) {
         if (goal == null) {
@@ -61,4 +70,11 @@ public class GoalServiceImpl implements GoalService {
     public Goal saveGoal(Goal goal) {
         return goalRepository.save(goal);
     }
+
+    @Override
+    public ResponseEntity<?> getGoals(int userId) {
+        if(!userRepository.existsById(userId)) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDto("User with given id doesn't exist!"));
+        return ResponseEntity.ok().body(goalRepository.getGoalsByUserId(userId));
+    }
+
 }

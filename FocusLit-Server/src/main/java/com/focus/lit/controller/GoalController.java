@@ -44,6 +44,14 @@ public class GoalController {
         return ResponseEntity.ok(savedGoal);
     }
 
+    @GetMapping("/getGoals")
+        public ResponseEntity<?> getGoals(@RequestParam("userId") Integer userId){
+        try{
+            return goalService.getGoals(userId);
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error occurred while getting goals: " + e.getMessage());
+        }
+    }
 
 }
 

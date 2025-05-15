@@ -11,4 +11,6 @@ public interface GoalRepository extends JpaRepository<Goal, Integer> {
 
     @Query("SELECT g FROM Goal g WHERE g.tag.id= :tagId AND g.user.id= :userId AND g.completedWorkDuration < g.targetWorkDuration" )
     List<Goal> getActiveGoalByUserIdAndTagId(@Param("userId") int userId,@Param("tagId") int tagId);
+
+    List<Goal> getGoalsByUserId(@Param("userId") int userId);
 }

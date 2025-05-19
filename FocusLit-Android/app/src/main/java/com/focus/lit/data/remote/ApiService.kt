@@ -2,17 +2,19 @@ package com.focus.lit.data.remote
 
 import com.focus.lit.data.model.AddTagRequest
 import com.focus.lit.data.model.ChangePasswordRequest
+import com.focus.lit.data.model.CreateGoalRequest
 import com.focus.lit.data.model.CreateSessionRequest
+import com.focus.lit.data.model.CreateSessionResponse
+import com.focus.lit.data.model.EndSessionRequest
+import com.focus.lit.data.model.Goal
 import com.focus.lit.data.model.LoginRequest
 import com.focus.lit.data.model.LoginResponse
 import com.focus.lit.data.model.RegisterRequest
 import com.focus.lit.data.model.Tag
 import com.focus.lit.data.model.UserAnalytics
-import com.focus.lit.data.model.UserAnalyticsResponse
 import com.focus.lit.data.model.UserInfo
 import com.focus.lit.data.model.UserProfileChangeBody
 import com.focus.lit.data.model.WeeklyWorkResponse
-import com.focus.lit.ui.viewmodel.HomePageViewModel
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -47,7 +49,14 @@ interface ApiService {
     suspend fun getUserAnalytics(@Query("userId") userId: Int): UserAnalytics
 
     @POST("session/create")
-    suspend fun createSession(@Body request: CreateSessionRequest)
+    suspend fun createSession(@Body request: CreateSessionRequest): CreateSessionResponse
 
+    @POST("session/endSession")
+    suspend fun endSession(@Body request: EndSessionRequest)
 
+    @GET("goal/getGoals")
+    suspend fun getGoals(@Query("userId") userId: Int?): List<Goal>
+
+    @POST("goal/create")
+    suspend fun createGoal(@Body request: CreateGoalRequest)
 }

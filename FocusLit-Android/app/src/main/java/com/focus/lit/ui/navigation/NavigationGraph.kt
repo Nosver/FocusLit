@@ -31,11 +31,13 @@ fun NavigationGraph(navController: NavHostController) {
         composable(Screen.Register.route) { RegisterScreen(navController) }
         composable(Screen.AddTag.route){AddTagScreen(navController)}
         composable(
-            route = "timer?study={study}&break={break}&topic={topic}",
+            route = "timer?study={study}&break={break}&topic={topic}&id={id}&sessionId={sessionId}",
             arguments = listOf(
                 navArgument("study") { type = NavType.IntType },
                 navArgument("break") { type = NavType.IntType },
-                navArgument("topic") { type = NavType.StringType }
+                navArgument("topic") { type = NavType.StringType },
+                navArgument("id") { type = NavType.StringType },
+                navArgument("sessionId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
             TimerScreen(navController, backStackEntry)

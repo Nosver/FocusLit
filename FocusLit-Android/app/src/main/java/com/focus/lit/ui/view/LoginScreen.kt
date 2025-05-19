@@ -120,6 +120,23 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
                 Text("Enter with Google")
             }
         }
+        if (viewModel.loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f))
+                    .align(Alignment.Center),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator(color = Color.White)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Loading...", color = Color.White, fontSize = 16.sp)
+                }
+            }
+        }
     }
 }
 

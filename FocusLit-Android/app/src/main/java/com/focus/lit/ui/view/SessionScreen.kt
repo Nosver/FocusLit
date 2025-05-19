@@ -65,6 +65,7 @@ fun StartSessionScreen(navController: NavHostController, viewModel: SessionViewM
     val selectedTag by viewModel.selectedTag.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val allTopics = viewModel.allTopics.collectAsState()
+    val sessionId= viewModel.sessionId.collectAsState()
 
     val filteredTopics = allTopics.value
         .filter { it.name.startsWith(searchQuery, ignoreCase = true) }
@@ -95,7 +96,11 @@ fun StartSessionScreen(navController: NavHostController, viewModel: SessionViewM
 
         OutlinedTextField(
             value = studyMinutes,
-            onValueChange = viewModel::onStudyMinutesChange,
+            onValueChange = { value ->
+                if (value.isEmpty() || value.toIntOrNull() ?: 0 > 0) {
+                    viewModel.onStudyMinutesChange(value)
+                }
+            },
             label = { Text("Study Duration (minutes)") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             singleLine = true,
@@ -104,7 +109,11 @@ fun StartSessionScreen(navController: NavHostController, viewModel: SessionViewM
 
         OutlinedTextField(
             value = breakMinutes,
-            onValueChange = viewModel::onBreakMinutesChange,
+            onValueChange = { value ->
+                if (value.isEmpty() || value.toIntOrNull() ?: 0 > 0) {
+                    viewModel.onBreakMinutesChange(value)
+                }
+            },
             label = { Text("Break Duration (minutes)") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             singleLine = true,
@@ -126,17 +135,15 @@ fun StartSessionScreen(navController: NavHostController, viewModel: SessionViewM
 
         Button(
             onClick = {
-viewModel.createSession(
-    onSuccess = {
-        navController.navigate("timer?study=$studyMinutes&break=$breakMinutes&topic=${selectedTag.name}&id=${selectedTag.id}")
-    },
-    onError = {
-            err -> Toast.makeText(context,"Unable to create session: ${err}  ", Toast.LENGTH_SHORT).show()
-
-    }
-)
-
-
+                viewModel.createSession(
+                    onSuccess = {
+                        val currentSessionId = viewModel.sessionId.value
+                        navController.navigate("timer?study=$studyMinutes&break=$breakMinutes&topic=${selectedTag.name}&id=${selectedTag.id}&sessionId=$currentSessionId")
+                    },
+                    onError = {
+                        err -> Toast.makeText(context,"Unable to create session: ${err}  ", Toast.LENGTH_SHORT).show()
+                    }
+                )
             },
             enabled = studyMinutes.isNotEmpty() && breakMinutes.isNotEmpty() && selectedTag.name.isNotEmpty(),
             modifier = Modifier.fillMaxWidth()

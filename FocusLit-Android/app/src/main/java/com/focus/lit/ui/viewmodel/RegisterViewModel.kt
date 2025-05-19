@@ -1,5 +1,8 @@
 package com.focus.lit.ui.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.focus.lit.data.local.TokenManager
@@ -32,6 +35,8 @@ class RegisterViewModel @Inject constructor(
 
     private val _passwordConfirm = MutableStateFlow("")
     val passwordConfirm: StateFlow<String> = _passwordConfirm
+
+    var loading by mutableStateOf(false)
 
     fun onEmailChanged(value: String) {
         _email.value = value
@@ -68,6 +73,7 @@ class RegisterViewModel @Inject constructor(
 //        }
 
         viewModelScope.launch {
+            loading = true
             try {
                 val response = apiService.register(
                     RegisterRequest(_username.value,_password.value,_email.value)
@@ -84,9 +90,10 @@ class RegisterViewModel @Inject constructor(
                 onError(errorMessage)
             } catch (e: Exception) {
                 onError(e.message ?: "Unknown error")
+            } finally{
+                loading = false
             }
         }
-
     }
 
     private fun isPasswordStrong(password: String): Boolean {

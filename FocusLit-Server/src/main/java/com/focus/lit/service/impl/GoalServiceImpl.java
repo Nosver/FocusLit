@@ -1,9 +1,13 @@
 package com.focus.lit.service.impl;
 
 import com.focus.lit.dto.ErrorMessageDto;
+import com.focus.lit.dto.GoalCreateDto;
 import com.focus.lit.dto.GoalDto;
 import com.focus.lit.model.Goal;
+import com.focus.lit.model.Tag;
+import com.focus.lit.model.User;
 import com.focus.lit.repository.GoalRepository;
+import com.focus.lit.repository.TagRepository;
 import com.focus.lit.repository.UserRepository;
 import com.focus.lit.service.GoalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GoalServiceImpl implements GoalService {
@@ -22,33 +28,26 @@ public class GoalServiceImpl implements GoalService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TagRepository tagRepository;
+
     @Override
-    public Goal createGoal(Goal goal) {
-        if (goal == null) {
-            throw new IllegalArgumentException("Goal object must be field.");
-        }
+    public ResponseEntity<?> createGoal(GoalCreateDto goalCreateDto) {
+        Optional<Tag> existingTag = tagRepository.findById(goalCreateDto.getTagId());
+        if(existingTag.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDto("Selected tag doesn't exist!"));
+        Optional<User> existingUser = userRepository.findById(goalCreateDto.getUserId());
+        if(existingUser.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDto("User with given id doesn't exist!"));
 
-        if (goal.getTag() == null) {
-            throw new IllegalArgumentException("Goal's Tag field cannot be null.");
-        }
+        Goal goal = new Goal();
+        goal.setCompletedWorkDuration(0);
+        goal.setTargetWorkDuration(goalCreateDto.getTargetWorkDuration());
+        goal.setStartTime(LocalDateTime.now());
+        goal.setTag(existingTag.get());
+        goal.setUser(existingUser.get());
 
-        if (goal.getStartTime() == null ) {
-            throw new IllegalArgumentException("Start time cannot be null.");
-        }
-
-        if (goal.getTargetWorkDuration() <= 0) {
-            throw new IllegalArgumentException("Target uptime must be greater than 0.");
-        }
-
-       /* if (goal.getEndTime().isBefore(goal.getStartTime())) {
-            throw new IllegalArgumentException("The end time cannot be before the start time.");
-        }
-
-        */
-
-        return goalRepository.save(goal);
+        goalRepository.save(goal);
+        return ResponseEntity.ok().build();
     }
-
 
     @Override
     public void deleteGoal(GoalDto goal) {

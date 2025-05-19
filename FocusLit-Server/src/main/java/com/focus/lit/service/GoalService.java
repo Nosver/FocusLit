@@ -1,5 +1,6 @@
 package com.focus.lit.service;
 
+import com.focus.lit.dto.GoalCreateDto;
 import com.focus.lit.dto.GoalDto;
 import com.focus.lit.model.Goal;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface GoalService {
-    Goal createGoal(Goal goal);
+    ResponseEntity<?> createGoal(GoalCreateDto goalCreateDto);
     void deleteGoal(GoalDto goal);
     List<Goal> getActiveGoalByUserIdAndTagId(int UserId, int tagId);
 

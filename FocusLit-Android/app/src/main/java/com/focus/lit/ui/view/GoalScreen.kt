@@ -1,5 +1,6 @@
 package com.focus.lit.ui.view
 
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,47 +14,32 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.focus.lit.ui.components.GenericDropdownMenuContent
+import com.focus.lit.ui.viewmodel.GoalViewModel
 
-data class Goal(
-    val tagName: String,
-    val targetMinutes: Int,
-    val completedMinutes: Int
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GoalScreen(navController: NavController) {
-    var showAddGoalDialog by remember { mutableStateOf(false) }
-    var selectedTag by remember { mutableStateOf("") }
-    var targetMinutes by remember { mutableStateOf("") }
-    var searchQuery by remember { mutableStateOf("") }
+fun GoalScreen(navController: NavController, viewModel: GoalViewModel = hiltViewModel()) {
+    val navBackStackEntry = remember { navController.currentBackStackEntry }
+    val context = LocalContext.current
 
-    // Mock data
-    val mockTags = listOf("Mathematics", "Physics", "Chemistry", "Biology", "History", "Literature")
-    var goals by remember { mutableStateOf(
-        listOf(
-            Goal("Mathematics", 120, 45),
-            Goal("Physics", 90, 60),
-            Goal("Chemistry", 60, 30)
-        )
-    ) }
+    LaunchedEffect(navBackStackEntry) {
+        viewModel.fetchGoals()
+        viewModel.fetchTags()
+    }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Study Goals", fontWeight = FontWeight.Bold, fontSize = 22.sp) },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
-            )
-        },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showAddGoalDialog = true },
+                onClick = { viewModel.showAddGoalDialog = true },
                 containerColor = MaterialTheme.colorScheme.secondary
             ) {
                 Icon(Icons.Filled.Add, contentDescription = "Add Goal", tint = Color.White)
@@ -68,8 +54,8 @@ fun GoalScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
+                value = viewModel.searchQueryGoal,
+                onValueChange = { viewModel.searchQueryGoal = it },
                 label = { Text("Search Goals") },
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
@@ -83,93 +69,81 @@ fun GoalScreen(navController: NavController) {
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(goals.filter { 
-                    it.tagName.contains(searchQuery, ignoreCase = true) 
+                items(viewModel.goals.filter {
+                    it.tag.name.contains(viewModel.searchQueryGoal, ignoreCase = true)
                 }) { goal ->
                     GoalItem(
-                        tagName = goal.tagName,
-                        targetMinutes = goal.targetMinutes,
-                        completedMinutes = goal.completedMinutes
+                        tagName = goal.tag.name,
+                        targetMinutes = goal.targetWorkDuration,
+                        completedMinutes = goal.completedWorkDuration
                     )
                 }
             }
         }
     }
 
-    if (showAddGoalDialog) {
+    if (viewModel.showAddGoalDialog) {
         AlertDialog(
-            onDismissRequest = { showAddGoalDialog = false },
+            onDismissRequest = { viewModel.showAddGoalDialog = false },
             title = { Text("Add New Goal") },
             text = {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Tag Selection Dropdown
-                    ExposedDropdownMenuBox(
-                        expanded = false,
-                        onExpandedChange = { },
-                    ) {
-                        OutlinedTextField(
-                            value = selectedTag.ifEmpty { "Select a Tag" },
-                            onValueChange = { },
-                            readOnly = true,
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = false) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .menuAnchor()
-                        )
-
-                        ExposedDropdownMenu(
-                            expanded = false,
-                            onDismissRequest = { }
-                        ) {
-                            mockTags.forEach { tag ->
-                                DropdownMenuItem(
-                                    text = { Text(tag) },
-                                    onClick = { selectedTag = tag }
-                                )
-                            }
-                        }
-                    }
-
                     // Target Minutes Input
                     OutlinedTextField(
-                        value = targetMinutes,
-                        onValueChange = { if (it.isEmpty() || it.toIntOrNull() ?: 0 > 0) targetMinutes = it },
+                        value = viewModel.targetMinutes,
+                        onValueChange = {viewModel.targetMinutes = it },
                         label = { Text("Target Minutes") },
-                        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-                            keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
-                        ),
                         modifier = Modifier.fillMaxWidth()
                     )
+
+                    OutlinedTextField(
+                        value = viewModel.searchQueryTag,
+                        onValueChange = { viewModel.updateSearchQuery(it) },
+                        label = { Text("Select Parent Tag") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    GenericDropdownMenuContent(options = viewModel.filteredTags, query = viewModel.searchQueryTag){
+                        viewModel.selectParentTag(it)
+                    }
                 }
             },
             confirmButton = {
                 Button(
-                    onClick = {
-                        if (selectedTag.isNotEmpty() && targetMinutes.isNotEmpty()) {
-                            goals = goals + Goal(
-                                tagName = selectedTag,
-                                targetMinutes = targetMinutes.toInt(),
-                                completedMinutes = 0
-                            )
-                            showAddGoalDialog = false
-                            selectedTag = ""
-                            targetMinutes = ""
-                        }
-                    },
-                    enabled = selectedTag.isNotEmpty() && targetMinutes.isNotEmpty()
+                    onClick = {viewModel.createGoal({
+                        Toast.makeText(context, "Tag created successfully", Toast.LENGTH_SHORT).show()
+                        viewModel.showAddGoalDialog = false
+                    });},
+                    enabled = viewModel.parentTag.isNotEmpty() && viewModel.targetMinutes.isNotEmpty()
                 ) {
                     Text("Add Goal")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showAddGoalDialog = false }) {
+                TextButton(onClick = { viewModel.showAddGoalDialog = false }) {
                     Text("Cancel")
                 }
             }
         )
+    }
+
+    if (viewModel.loading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.4f)),
+            contentAlignment = Alignment.Center  // Correct placement
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator(color = Color.White)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Loading...", color = Color.White, fontSize = 16.sp)
+            }
+        }
     }
 }
 

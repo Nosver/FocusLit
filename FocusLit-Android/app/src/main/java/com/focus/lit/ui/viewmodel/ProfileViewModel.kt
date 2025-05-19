@@ -50,7 +50,6 @@ class ProfileViewModel @Inject constructor(
             loading = true
             try {
                 val userId = tokenManager.getId();
-                Log.d("ID", userId.toString())
                 val userInfo = apiService.getUser(userId)
                 userName = userInfo.name
                 email = userInfo.mail

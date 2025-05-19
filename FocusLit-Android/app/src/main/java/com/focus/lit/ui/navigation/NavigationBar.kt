@@ -29,7 +29,7 @@ fun NavigationBarSample(navController: NavController) {
     )
     val selectedIcons = listOf(Icons.Filled.Home, Icons.Filled.AddCircle, Icons.Filled.Person, Icons.Filled.DateRange)
     val unselectedIcons = listOf(Icons.Outlined.Home, Icons.Outlined.AddCircle, Icons.Outlined.Person, Icons.Outlined.DateRange)
-
+    val labels = listOf("Homepage","Start Session","Profile","Goal")
     val currentRoute = currentRoute(navController)
 
     NavigationBar {
@@ -42,7 +42,7 @@ fun NavigationBarSample(navController: NavController) {
                         contentDescription = screen.route
                     )
                 },
-                label = { Text(screen.route.replaceFirstChar { it.uppercase() }) },
+                label = { Text(labels[index]) },
                 selected = currentRoute == screen.route,
                 onClick = {
                     if (currentRoute != screen.route) {

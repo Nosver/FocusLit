@@ -1,140 +1,162 @@
 package com.focus.lit.ui.view
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.focus.lit.R
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.focus.lit.ui.viewmodel.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
-    val email by viewModel.email.collectAsState()
+    val email by viewModel.email.collectAsState() // Use email as username for now
     val password by viewModel.password.collectAsState()
     val context = LocalContext.current
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
+            .systemBarsPadding()
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.login_image),
-            contentDescription = "Login Image",
-            contentScale = ContentScale.Crop,
+        // Pastel green abstract shape (blob)
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .blur(16.dp)
+                .size(500.dp)
+                .offset(x = (-120).dp, y = 200.dp)
+                .clip(CircleShape)
+                .background(Color(0xFFD6F5D6).copy(alpha = 0.7f))
         )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(horizontal = 32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Header
             Text(
-                text = "Login",
+                text = "Welcome Back!",
                 style = TextStyle(
-                    color = Color.White,
-                    fontSize = 36.sp,
-                    shadow = Shadow(
-                        color = Color.Black.copy(alpha = 0.5f),
-                        offset = Offset(4f, 4f),
-                        blurRadius = 12f
-                    )
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
                 )
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Enter Your Email & Password",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = Color.Black.copy(alpha = 0.7f)
+                ),
+                modifier = Modifier.padding(top = 4.dp, bottom = 32.dp)
+            )
+
+            // Username
             OutlinedTextField(
                 value = email,
                 onValueChange = viewModel::onEmailChanged,
                 label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White.copy(alpha = 0.5f) // 50% opaque background
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedBorderColor = Color.Black,
+                    unfocusedBorderColor = Color.Black.copy(alpha = 0.3f),
+                    cursorColor = Color.Black
                 )
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            // Password
             OutlinedTextField(
                 value = password,
                 onValueChange = viewModel::onPasswordChanged,
                 label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.White.copy(alpha = 0.5f) // 50% opaque background
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedBorderColor = Color.Black,
+                    unfocusedBorderColor = Color.Black.copy(alpha = 0.3f),
+                    cursorColor = Color.Black
                 )
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Row {
-                Text("Do not have account? ")
-                Text(
-                    "Register Here",
-                    modifier = Modifier.clickable(onClick = { navController.navigate("register") })
-                )
-            }
-                Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Login Button
             Button(
                 onClick = {
                     viewModel.login(
-                        onSuccess = {
-                            handleLogin(navController)
-                        },
+                        onSuccess = { handleLogin(navController) },
                         onError = { errorMsg ->
                             Toast.makeText(context, "Login Error: ${errorMsg}", Toast.LENGTH_SHORT).show()
                         }
                     )
                 },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
             ) {
-                Text("Login")
+                Text(
+                    "LOGIN",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
+
             Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { handleGoogleLogin() },
+
+            // Signup
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text("Enter with Google")
+                TextButton(onClick = { navController.navigate("register") }) {
+                    Text(
+                        "Create a New Account",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.sp
+                    )
+                }
             }
         }
+
+        // Loading Overlay
         if (viewModel.loading) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f))
-                    .align(Alignment.Center),
+                    .background(Color.Black.copy(alpha = 0.2f)),
                 contentAlignment = Alignment.Center
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CircularProgressIndicator(color = Color.White)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Loading...", color = Color.White, fontSize = 16.sp)
-                }
+                CircularProgressIndicator(color = Color.Black)
             }
         }
     }
@@ -144,8 +166,4 @@ fun handleLogin(navController: NavController) {
     navController.navigate("homepage") {
         popUpTo("login") { inclusive = true }
     }
-}
-
-fun handleGoogleLogin() {
-    throw NotImplementedError("Google login is not implemented yet")
 }

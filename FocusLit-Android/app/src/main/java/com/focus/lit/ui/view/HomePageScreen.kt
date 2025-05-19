@@ -1,21 +1,26 @@
 package com.focus.lit.ui.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -25,22 +30,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.focus.lit.R
 import com.focus.lit.ui.viewmodel.HomePageViewModel
-import com.focus.lit.ui.viewmodel.ProfileViewModel
+import com.focus.lit.ui.viewmodel.WeeklyWorkViewModel
+import java.time.LocalDateTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomePage(
     navController: NavHostController,
-    viewModel: HomePageViewModel = hiltViewModel()
+    homePageViewModel: HomePageViewModel = hiltViewModel(),
+    weeklyWorkViewModel: WeeklyWorkViewModel = hiltViewModel()
+
 ) {
-    val streak by viewModel.streak
-    val totalWorkDuration by viewModel.totalWorkDuration
-    val score by viewModel.score
-    val userRank by viewModel.userRank
-    val achievements by viewModel.achievements
+    val streak by homePageViewModel.streak
+    val totalWorkDuration by homePageViewModel.totalWorkDuration
+    val score by homePageViewModel.score
+    val userRank by homePageViewModel.userRank
+    val achievements by homePageViewModel.achievements
+    val sessions = weeklyWorkViewModel.weeklyWorkResponse?.sessions
 
     Column(
         modifier = Modifier
@@ -86,7 +95,7 @@ fun HomePage(
 
         // Weekly Calendar Section
         SectionContainer(backgroundColor = Color(0xFFE8F5E9)) {
-            GoogleStyleWeeklyCalendar()
+            GoogleStyleWeeklyCalendar(sessions)
         }
     }
 }
@@ -183,21 +192,31 @@ fun AchievementsSection(achievements: List<String>) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun GoogleStyleWeeklyCalendar() {
+private fun GoogleStyleWeeklyCalendar(sessions: List<com.focus.lit.data.model.Session>?) {
+    if (sessions.isNullOrEmpty()) {
+        Text(
+            text = "No sessions available",
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.fillMaxSize(),
+            color = Color.Gray
+        )
+        return
+    }
+
+    // Filter sessions to ensure valid times
+    val validSessions = sessions.filter { session ->
+        val startHour = LocalDateTime.parse(session.startTime).hour
+        startHour in 0..23
+    }
+
     val days = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-    val timeSlots = listOf("9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00")
-    
-    // Mock session data with start hour and duration
-    val sessions = mapOf(
-        0 to listOf(Session(9, 60, "Mathematics"), Session(14, 45, "Physics")),
-        1 to listOf(Session(10, 30, "Chemistry"), Session(15, 60, "Biology")),
-        2 to listOf(Session(11, 45, "History")),
-        3 to listOf(Session(13, 60, "Literature"), Session(16, 30, "Mathematics")),
-        4 to listOf(Session(9, 45, "Physics"), Session(14, 60, "Chemistry")),
-        5 to listOf(),
-        6 to listOf(Session(10, 60, "Biology"), Session(15, 45, "History"))
-    )
+    val timeSlots = listOf("0:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00")
+
+    val groupedSessions = validSessions.groupBy { session ->
+        LocalDateTime.parse(session.startTime).dayOfWeek.value % 7
+    }
 
     val horizontalScrollState = rememberScrollState()
 
@@ -223,10 +242,8 @@ fun GoogleStyleWeeklyCalendar() {
                     modifier = Modifier
                         .horizontalScroll(horizontalScrollState)
                 ) {
-                    // Fixed day label space
-                    Spacer(modifier = Modifier.width(60.dp))
-                    
-                    // Scrollable time slots
+                    Spacer(modifier = Modifier.width(60.dp)) // Fixed day label space
+
                     Row(
                         modifier = Modifier.width(80.dp * timeSlots.size)
                     ) {
@@ -292,10 +309,11 @@ fun GoogleStyleWeeklyCalendar() {
                             }
 
                             // Sessions
-                            val daySessions = sessions[dayIndex] ?: emptyList()
+                            val daySessions = groupedSessions[dayIndex] ?: emptyList()
                             daySessions.forEach { session ->
-                                val startOffset = (session.hour - 9) * 80 // Each slot is 80dp wide
-                                val width = (session.duration / 60.0f) * 80 // Calculate width based on duration
+                                val startHour = LocalDateTime.parse(session.startTime).hour
+                                val startOffset = startHour * 80 // Each slot is 80dp wide
+                                val width = (session.workDuration / 60.0f) * 80 // Calculate width based on duration
 
                                 Box(
                                     modifier = Modifier
@@ -318,14 +336,14 @@ fun GoogleStyleWeeklyCalendar() {
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            text = session.tag,
+                                            text = "Work", // TODO: TAG NAME
                                             style = MaterialTheme.typography.bodySmall,
                                             color = Color(0xFF4285F4),
                                             fontWeight = FontWeight.Bold,
                                             maxLines = 1
                                         )
                                         Text(
-                                            text = "${session.duration}min",
+                                            text = "${session.workDuration}min",
                                             style = MaterialTheme.typography.bodySmall,
                                             color = Color(0xFF4285F4),
                                             maxLines = 1
@@ -340,10 +358,3 @@ fun GoogleStyleWeeklyCalendar() {
         }
     }
 }
-
-// Data class for session information
-private data class Session(
-    val hour: Int,
-    val duration: Int,
-    val tag: String
-)

@@ -16,6 +16,7 @@ animationCoreLint = "1.8.0-rc02"
 retrofit = "2.9.0"
 coroutines = "1.7.3"
 dagger-hilt = "2.51.1"
+runtimeLivedata = "1.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +47,7 @@ androidx-coroutines-android = {group = "org.jetbrains.kotlinx", name = "kotlinx-
 androidx-hilt-nav = {group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.0.0"}
 hilt-android = {group = "com.google.dagger", name = "hilt-android", version.ref = "dagger-hilt"}
 hilt-complier = {group = "com.google.dagger", name = "hilt-compiler", version.ref = "dagger-hilt"}
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 
 [plugins]

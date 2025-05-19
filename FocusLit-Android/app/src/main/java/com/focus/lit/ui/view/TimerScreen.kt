@@ -43,7 +43,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import com.focus.lit.data.model.Tag
 import com.focus.lit.ui.viewmodel.EndSessionViewModel
+import com.focus.lit.ui.viewmodel.SessionViewModel
 import kotlinx.coroutines.delay
 
 
@@ -52,7 +54,8 @@ import kotlinx.coroutines.delay
 fun TimerScreen(
     navController: NavController,
     backStackEntry: NavBackStackEntry,
-    viewModel: EndSessionViewModel = hiltViewModel()
+    viewModel: EndSessionViewModel = hiltViewModel(),
+    sessionViewModel: SessionViewModel = hiltViewModel()
 ) {
     val studyMinutes = backStackEntry.arguments?.getInt("study") ?: 25
     val breakMinutes = backStackEntry.arguments?.getInt("break") ?: 5
@@ -138,10 +141,29 @@ fun TimerScreen(
                         viewModel.endSession(id, completedMinutes)
                     }
 
-                    showContinueDialog = false
-                    isStudyTime = true
-                    totalDuration = studyMinutes * 60
-                    timeRemaining = studyMinutes * 60
+                    // Create a new session with the same parameters
+                    sessionViewModel.onStudyMinutesChange(studyMinutes.toString())
+                    sessionViewModel.onBreakMinutesChange(breakMinutes.toString())
+                    sessionViewModel.onSelectedTopicChange(selectedTopic)
+                    tagId?.toIntOrNull()?.let { id ->
+                        sessionViewModel.onSelectedTagChange(Tag(id, selectedTopic))
+                    }
+
+                    sessionViewModel.createSession(
+                        onSuccess = {
+                            showContinueDialog = false
+                            isStudyTime = true
+                            totalDuration = studyMinutes * 60
+                            timeRemaining = studyMinutes * 60
+                        },
+                        onError = { errorMessage ->
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                            showContinueDialog = false
+                            navController.navigate("homepage") {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        }
+                    )
                 }) {
                     Text("Yes")
                 }

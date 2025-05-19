@@ -2,6 +2,7 @@ package com.focus.lit.ui.view
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -33,6 +34,13 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
     val confirmPassword by viewModel.passwordConfirm.collectAsState()
 
     val context = LocalContext.current
+
+    fun handleRegister(navController: NavController) {
+        Toast.makeText(context,"User registered successfully!",Toast.LENGTH_SHORT).show()
+        navController.navigate("login") {
+            popUpTo("register") { inclusive = true }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -139,12 +147,24 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                 Text("Already have an account? Login")
             }
         }
+        if (viewModel.loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f))
+                    .align(Alignment.Center),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator(color = Color.White)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Loading...", color = Color.White, fontSize = 16.sp)
+                }
+            }
+        }
     }
-}
 
-fun handleRegister(navController: NavController) {
 
-    navController.navigate("login") {
-        popUpTo("register") { inclusive = true }
-    }
 }

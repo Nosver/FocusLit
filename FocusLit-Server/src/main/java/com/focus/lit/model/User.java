@@ -45,6 +45,7 @@ public class User implements UserDetails {
 
     private String emailVerificationLink;
 
+    @Column(columnDefinition = "TINYINT(1)")
     private Boolean isAccountEnabled;
 
     @Override

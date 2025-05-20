@@ -43,6 +43,9 @@ public class User implements UserDetails {
     @JoinColumn(name = "user_analytics_id", referencedColumnName = "id")
     private UserAnalytics userAnalytics;
 
+    private String emailVerificationLink;
+
+    private Boolean isAccountEnabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

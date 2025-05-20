@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<?> changePassword(ChangePasswordUserDto changePasswordUserDto) {
         User user = userRepository.findByMail(changePasswordUserDto.getMail()).orElseThrow();
         if(!passwordEncoder.matches(changePasswordUserDto.getPassword(), user.getPassword())){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDto("Old password is incorrect"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("Old password is incorrect"));
         }
         user.setPassword(passwordEncoder.encode(changePasswordUserDto.getNewPassword()));
         userRepository.save(user);

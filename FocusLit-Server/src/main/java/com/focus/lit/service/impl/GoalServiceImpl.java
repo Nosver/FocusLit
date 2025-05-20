@@ -1,6 +1,6 @@
 package com.focus.lit.service.impl;
 
-import com.focus.lit.dto.ErrorMessageDto;
+import com.focus.lit.dto.MessageResponse;
 import com.focus.lit.dto.GoalCreateDto;
 import com.focus.lit.dto.GoalDto;
 import com.focus.lit.model.Goal;
@@ -34,9 +34,9 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public ResponseEntity<?> createGoal(GoalCreateDto goalCreateDto) {
         Optional<Tag> existingTag = tagRepository.findById(goalCreateDto.getTagId());
-        if(existingTag.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDto("Selected tag doesn't exist!"));
+        if(existingTag.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("Selected tag doesn't exist!"));
         Optional<User> existingUser = userRepository.findById(goalCreateDto.getUserId());
-        if(existingUser.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDto("User with given id doesn't exist!"));
+        if(existingUser.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("User with given id doesn't exist!"));
 
         Goal goal = new Goal();
         goal.setCompletedWorkDuration(0);
@@ -72,7 +72,7 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     public ResponseEntity<?> getGoals(int userId) {
-        if(!userRepository.existsById(userId)) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessageDto("User with given id doesn't exist!"));
+        if(!userRepository.existsById(userId)) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse("User with given id doesn't exist!"));
         return ResponseEntity.ok().body(goalRepository.getGoalsByUserId(userId));
     }
 

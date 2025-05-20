@@ -23,4 +23,5 @@ public interface UserService {
     ResponseEntity<?> changePassword(ChangePasswordUserDto changePasswordUserDto) throws Exception;
 
     Optional<UserAnalytics> getUserAnalytics(Integer userId);
+
 }

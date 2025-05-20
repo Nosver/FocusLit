@@ -1,8 +1,12 @@
 package com.focus.lit.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
-public class ErrorMessageDto {
+@Getter
+@Setter
+public class MessageResponse {
     public String message;
 }

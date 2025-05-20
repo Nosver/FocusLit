@@ -3,6 +3,7 @@ package com.focus.lit.controller;
 
 import com.focus.lit.dto.AuthenticationResponse;
 import com.focus.lit.dto.ChangePasswordUserDto;
+import com.focus.lit.dto.MessageResponse;
 import com.focus.lit.dto.UserDto;
 import com.focus.lit.model.User;
 import com.focus.lit.service.impl.AuthenticationServiceImpl;
@@ -24,17 +25,18 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<MessageResponse> register(
             @RequestBody UserDto userDto) {
         try{
-            AuthenticationResponse authenticationResponse = authService.register(userDto);
-            if(authenticationResponse.getToken() == null){
+            MessageResponse authenticationResponse = authService.register(userDto);
+            if(!authenticationResponse.getMessage().equals("User registration was successful")){
                 return ResponseEntity.badRequest().body(authenticationResponse);
             }
             return ResponseEntity.ok().body(authenticationResponse);
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new AuthenticationResponse(null, e.getMessage(), null, -1));        }
+                    .body(new MessageResponse(e.getMessage()));
+        }
     }
 
 
@@ -54,6 +56,12 @@ public class AuthenticationController {
         }
     }
 
- 
+    @GetMapping("/verifyEmail")
+    public ResponseEntity<Boolean> verifyEmail(@RequestParam String token) {
+        boolean res = authService.verifyEmail(token);
+        if (res)
+            return ResponseEntity.ok(true);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
 
+    }
 }

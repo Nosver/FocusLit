@@ -107,9 +107,9 @@ public class AuthenticationServiceImpl {
 
         User user = userRepository.findByMail(userDto.getMail()).orElseThrow();
 
-        /*if(!user.getIsAccountEnabled()){
+        if(!user.getIsAccountEnabled()){
             return new AuthenticationResponse(null, "Account is not verified!", null, -1);
-        }*/
+        }
 
         String jwt = jwtService.generateToken(user);
 

@@ -73,7 +73,6 @@ public class AuthenticationServiceImpl {
         user.setCreatedAt(LocalDateTime.now());
         UserAnalytics userAnalytics = userAnalyticsService.createUserAnalytics();
         user.setUserAnalytics(userAnalytics);
-        user.setIsAccountEnabled(false);
         user.setEmailVerificationLink(UUID.randomUUID().toString());
         user.setIsAccountEnabled(false);
         userRepository.save(user);
@@ -115,6 +114,7 @@ public class AuthenticationServiceImpl {
         String jwt = jwtService.generateToken(user);
 
         revokeAllTokenByUser(userDto);
+        saveUserToken(jwt,user);
 
         return new AuthenticationResponse(jwt, "User login was successful", user.getRole().toString(), user.getId());
     }
@@ -135,8 +135,8 @@ public class AuthenticationServiceImpl {
     public boolean verifyEmail(String verificationCode){
         Optional<User> user = userRepository.findByEmailVerificationLink(verificationCode);
         if(user.isPresent()){
-            user.get().setIsAccountEnabled(true);
             user.get().setEmailVerificationLink(null);
+            user.get().setIsAccountEnabled(true);
             userRepository.save(user.get());
             return true;
         }

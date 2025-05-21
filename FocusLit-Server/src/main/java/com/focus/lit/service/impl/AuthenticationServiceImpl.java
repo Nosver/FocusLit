@@ -77,7 +77,7 @@ public class AuthenticationServiceImpl {
         user.setIsAccountEnabled(false);
         userRepository.save(user);
 
-        String subject = "Verify Your Email for Cafe-In Registration";
+        String subject = "Verify Your Email for FocusLit Registration";
         String body = "<html>" +
                 "<body style='font-family: Arial, sans-serif;'>" +
                 "<h2>Hi " + user.getName() + ",</h2>" +

@@ -56,7 +56,7 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/verifyEmail")
+    @GetMapping("/verify-email")
     public ResponseEntity<Boolean> verifyEmail(@RequestParam String token) {
         boolean res = authService.verifyEmail(token);
         if (res)

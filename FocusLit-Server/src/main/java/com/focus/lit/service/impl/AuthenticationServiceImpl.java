@@ -12,6 +12,7 @@ import com.focus.lit.model.enums.Role;
 import com.focus.lit.repository.TokenRepository;
 import com.focus.lit.repository.UserRepository;
 import com.focus.lit.service.MailSenderService;
+import com.focus.lit.service.TelegramService;
 import com.focus.lit.service.UserAnalyticsService;
 import jakarta.mail.MessagingException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,6 +36,7 @@ public class AuthenticationServiceImpl {
     private final UserAnalyticsService userAnalyticsService;
     private final AuthenticationManager authenticationManager;
     private final MailSenderService mailSenderService;
+    private final TelegramService telegramService;
 
     public AuthenticationServiceImpl(UserRepository userRepository,
                                      PasswordEncoder passwordEncoder,
@@ -42,7 +44,8 @@ public class AuthenticationServiceImpl {
                                      TokenRepository tokenRepository,
                                      AuthenticationManager authenticationManager,
                                      UserAnalyticsService userAnalyticsService,
-                                     MailSenderService mailSenderService
+                                     MailSenderService mailSenderService,
+                                     TelegramService telegramService
                                  ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -51,6 +54,7 @@ public class AuthenticationServiceImpl {
         this.authenticationManager = authenticationManager;
         this.userAnalyticsService = userAnalyticsService;
         this.mailSenderService = mailSenderService;
+        this.telegramService = telegramService;
     }
 
     public MessageResponse register(UserDto userDto) throws MessagingException {
@@ -132,12 +136,24 @@ public class AuthenticationServiceImpl {
         tokenRepository.save(token);
     }
 
-    public boolean verifyEmail(String verificationCode){
+    public boolean verifyEmail(String verificationCode) throws MessagingException {
         Optional<User> user = userRepository.findByEmailVerificationLink(verificationCode);
         if(user.isPresent()){
-            user.get().setEmailVerificationLink(null);
-            user.get().setIsAccountEnabled(true);
-            userRepository.save(user.get());
+            User existingUser = user.get();
+            String link = telegramService.generateInviteLink(existingUser.getId());
+            String subject = "Your Telegram Invitation for FocusLit";
+            String body = "<html>" +
+                    "<body style='font-family: Arial, sans-serif;'>" +
+                    "<h2>Hi " + existingUser.getName() + ",</h2>" +
+                    "<p><strong>Verify your email address:</strong> <a href='"+link+"'>Click here</a></p>" +
+                    "<p>Thanks!<br/>– FocusLit</p>" +
+                    "</body>" +
+                    "</html>";
+            mailSenderService.sendNewMail(new Mail(existingUser.getMail(), subject, body));
+
+            existingUser.setEmailVerificationLink(null);
+            existingUser.setIsAccountEnabled(true);
+            userRepository.save(existingUser);
             return true;
         }
         return false;

@@ -145,7 +145,7 @@ public class AuthenticationServiceImpl {
             String body = "<html>" +
                     "<body style='font-family: Arial, sans-serif;'>" +
                     "<h2>Hi " + existingUser.getName() + ",</h2>" +
-                    "<p><strong>Verify your email address:</strong> <a href='"+link+"'>Click here</a></p>" +
+                    "<p><strong>Your Telegram Invitation Link:</strong> <a href='"+link+"'>Click here</a></p>" +
                     "<p>Thanks!<br/>– FocusLit</p>" +
                     "</body>" +
                     "</html>";

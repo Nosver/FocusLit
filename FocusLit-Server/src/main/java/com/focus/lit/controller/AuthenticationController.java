@@ -7,6 +7,7 @@ import com.focus.lit.dto.MessageResponse;
 import com.focus.lit.dto.UserDto;
 import com.focus.lit.model.User;
 import com.focus.lit.service.impl.AuthenticationServiceImpl;
+import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
@@ -57,7 +58,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/verify-email")
-    public ResponseEntity<Boolean> verifyEmail(@RequestParam String token) {
+    public ResponseEntity<Boolean> verifyEmail(@RequestParam String token) throws MessagingException {
         boolean res = authService.verifyEmail(token);
         if (res)
             return ResponseEntity.ok(true);

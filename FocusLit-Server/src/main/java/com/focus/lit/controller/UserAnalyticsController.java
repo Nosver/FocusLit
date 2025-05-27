@@ -5,9 +5,11 @@ import com.focus.lit.dto.AddAchievementDto;
 import com.focus.lit.dto.UserAnalyticsDto;
 import com.focus.lit.dto.WeeklyWorkDto;
 import com.focus.lit.mapper.UserAnalyticsMapper;
+import com.focus.lit.model.User;
 import com.focus.lit.model.UserAnalytics;
 import com.focus.lit.repository.TokenRepository;
 import com.focus.lit.service.UserAnalyticsService;
+import com.focus.lit.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,9 @@ public class UserAnalyticsController {
     @Autowired
     private TokenRepository tokenRepository;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/get")
     public ResponseEntity<UserAnalyticsDto> get(int userId) {
 
@@ -34,8 +39,9 @@ public class UserAnalyticsController {
         if(userAnalytics.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        Optional<User> u=userService.getById(userId);
+        UserAnalyticsDto userAnalyticsDto = new UserAnalyticsDto(userId,userAnalytics.get().getScore(),userAnalytics.get().getStreak(),userAnalytics.get().getTotalWorkDuration(),userAnalytics.get().getUserRank(),u.get().getName());
 
-        UserAnalyticsDto userAnalyticsDto = userAnalyticsMapper.userAnalyticsToUserAnalyticsDto(userAnalytics.get());
         return new ResponseEntity<>(userAnalyticsDto, HttpStatus.OK);
     }
 

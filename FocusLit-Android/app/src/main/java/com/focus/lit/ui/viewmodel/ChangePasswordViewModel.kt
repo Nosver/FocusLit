@@ -26,6 +26,7 @@ class ChangePasswordViewModel @Inject constructor(
     var confirmPassword by mutableStateOf("")
     var errorMessage by mutableStateOf<String?>(null)
     var successMessage by mutableStateOf<String?>(null)
+    var loading by mutableStateOf(false)
 
     fun onChangePasswordClick(onSuccess: () -> Unit) {
         if (newPassword != confirmPassword) {
@@ -39,6 +40,7 @@ class ChangePasswordViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            loading = true
             try {
                 errorMessage = null
                 successMessage = null
@@ -68,8 +70,8 @@ class ChangePasswordViewModel @Inject constructor(
                     "Server error occurred"
                 }
 
-            } catch (e: Exception) {
-                errorMessage = e.message ?: "Unexpected error occurred"
+            } finally {
+                loading = false
             }
         }
     }

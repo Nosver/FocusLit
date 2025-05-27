@@ -9,5 +9,7 @@ data class UserAnalytics(
 
     val  totalWorkDuration: Double,
 
-    val  userRank: Int
+    val  userRank: Int,
+
+    val username: String
 )

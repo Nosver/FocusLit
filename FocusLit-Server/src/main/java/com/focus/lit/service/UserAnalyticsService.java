@@ -22,4 +22,6 @@ public interface UserAnalyticsService {
     WeeklyWorkDto getWeeklyWork(int userId);
 
     Optional<UserAnalytics> getUserAnalyticsByUserId(int userId);
+
+    int getRankByUserAnalyticsId(int id);
 }

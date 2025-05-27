@@ -79,7 +79,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserAnalytics> getUserAnalytics(Integer userId) {
-        return Optional.ofNullable(userRepository.findById(userId).get().getUserAnalytics());
+
+        UserAnalytics ua= userRepository.findById(userId).get().getUserAnalytics();
+        int rank= userAnalyticsService.getRankByUserAnalyticsId(ua.getId());
+        ua.setUserRank(rank);
+        return Optional.ofNullable(ua);
     }
 
 

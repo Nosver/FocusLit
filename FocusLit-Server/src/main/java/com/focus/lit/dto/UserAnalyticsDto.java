@@ -17,4 +17,6 @@ public class UserAnalyticsDto {
     private int totalWorkDuration;
 
     private int userRank;
+
+    private String username;
 }

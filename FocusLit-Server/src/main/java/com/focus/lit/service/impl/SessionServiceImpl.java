@@ -163,7 +163,7 @@ public class SessionServiceImpl implements SessionService {
             session.setCompletedWorkDuration(sessionInfo.getCompletedMinutes());
             session.setScore(getSessionScore(session));
         }
-        session.setEndTime(LocalDateTime.now());
+        session.setEndTime(ZonedDateTime.now(ZoneId.of("Europe/Istanbul")).toLocalDateTime());
         sessionRepository.save(session);
 
         //Handle goal progresses both for parent and children

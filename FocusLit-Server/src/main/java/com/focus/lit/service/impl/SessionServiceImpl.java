@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,7 +99,7 @@ public class SessionServiceImpl implements SessionService {
         Session session = new Session();
         session.setUser(u.get());
         session.setTag(t);
-        session.setStartTime(LocalDateTime.now());
+        session.setStartTime(ZonedDateTime.now(ZoneId.of("Europe/Istanbul")).toLocalDateTime());
         session.setWorkDuration(sessionDto.getWorkDuration());
         session.setWaitDuration(sessionDto.getWaitDuration());
         session.setCompleted(false);

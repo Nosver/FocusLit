@@ -12,4 +12,12 @@ public interface UserAnalyticsRepository extends JpaRepository<UserAnalytics, In
     @Modifying
     @Query("UPDATE UserAnalytics u set u.totalWorkDuration=u.totalWorkDuration+ :gainedWorkDuration WHERE u.id=:userAnalyticsId  ")
     void updateTotalWorkDuration(@Param("gainedWorkDuration") int gainedWorkDuration, @Param("userAnalyticsId") int userAnalyticsId);
+
+    @Query(value = "SELECT ranked.user_rank\n" +
+            "FROM (\n" +
+            "    SELECT id, RANK() OVER (ORDER BY score DESC) AS user_rank\n" +
+            "    FROM user_analytics\n" +
+            ") AS ranked\n" +
+            "WHERE id = :userAnalyticsId",nativeQuery = true)
+    int getRankFromUserAnalyticsId(@Param("userAnalyticsId") int userAnalyticsId);
 }

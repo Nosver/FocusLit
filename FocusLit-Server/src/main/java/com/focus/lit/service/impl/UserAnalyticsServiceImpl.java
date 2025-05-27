@@ -17,7 +17,6 @@ import com.focus.lit.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserAnalyticsServiceImpl implements UserAnalyticsService {
@@ -134,5 +132,10 @@ public class UserAnalyticsServiceImpl implements UserAnalyticsService {
     @Override
     public Optional<UserAnalytics> getUserAnalyticsByUserId(int userId) {
         return userService.getUserAnalytics(userId);
+    }
+
+    @Override
+    public int getRankByUserAnalyticsId(int id){
+        return userAnalyticsRepository.getRankFromUserAnalyticsId(id);
     }
 }

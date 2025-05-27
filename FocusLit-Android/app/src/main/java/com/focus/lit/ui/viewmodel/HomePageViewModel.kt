@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import com.focus.lit.data.local.TokenManager
 import com.focus.lit.data.remote.ApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,11 +34,16 @@ class HomePageViewModel @Inject constructor(
     private val _achievements = mutableStateOf(listOf<String>())
     val achievements: State<List<String>> = _achievements
 
+    var _name by mutableStateOf("")
+
+    var loading by mutableStateOf(false)
+
     init{
         fetchUserAnalytics()
     }
 
     private fun fetchUserAnalytics() {
+        loading = true
         viewModelScope.launch {
             try {
                 val userId = tokenManager.getId() ?: return@launch
@@ -45,8 +52,11 @@ class HomePageViewModel @Inject constructor(
                 _totalWorkDuration.value = response.totalWorkDuration
                 _score.value = response.score
                 _userRank.value = response.userRank
+                _name = response.username
             } catch (e: Exception) {
                 e.printStackTrace()
+            }finally {
+                loading = false
             }
         }
     }
